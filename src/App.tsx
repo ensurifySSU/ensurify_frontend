@@ -1,5 +1,15 @@
+import { Global, ThemeContext, ThemeProvider } from '@emotion/react';
+import globalStyles from './COMMON/styles/globalStyles';
+import { RouterProvider } from 'react-router-dom';
+import router from './Router';
+
 function App() {
-  return <>브랜치 이슈로 setting 작업 한거 바로 main으로 Push 했습니다ㅠ</>;
+  return (
+    <ThemeProvider theme={ThemeContext}>
+      <Global styles={globalStyles} />
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
 
 export default App;
