@@ -1,19 +1,12 @@
-import styled from '@emotion/styled';
+import { Global, ThemeContext, ThemeProvider } from '@emotion/react';
+import globalStyles from './COMMON/styles/globalStyles';
 
 function App() {
-  return <StContainer></StContainer>;
+  return (
+    <ThemeProvider theme={ThemeContext}>
+      <Global styles={globalStyles} />
+    </ThemeProvider>
+  );
 }
 
 export default App;
-
-// const StContainer = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-
-//   width: 100%;
-//   height: 100vh;
-
-//   color: #fff;
-// `;
