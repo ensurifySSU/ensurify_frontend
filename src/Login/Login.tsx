@@ -1,9 +1,22 @@
 import styled from '@emotion/styled';
-import { BackGroundAsset1, BackGroundAsset2, BackGroundAsset3 } from './assets';
+import { BackGroundAsset1, BackGroundAsset2, BackGroundAsset3 } from './assets/0_index';
+import { Logo } from '../Common/assets/0_index';
 
 const Login = () => {
   return (
     <StContainer>
+      <div>
+        <div>
+          <div>
+            <h2>계약의 확실성과</h2>
+            <h2>단순함을 한번에</h2>
+          </div>
+          <div>
+            <Logo />
+          </div>
+        </div>
+      </div>
+      <div>로그인 부분</div>
       <StBackGroundAsset1 />
       <StBackGroundAsset2 />
       <StBackGroundAsset3 />
