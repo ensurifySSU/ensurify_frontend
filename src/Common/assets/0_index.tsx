@@ -1,3 +1,4 @@
-import Logo from './Ensurify.svg?react';
+import Logo from './logo.svg?react';
+import LogoBig from './bigLogo.svg?react';
 
-export { Logo };
+export { Logo, LogoBig };
