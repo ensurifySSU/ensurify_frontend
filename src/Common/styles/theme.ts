@@ -6,7 +6,7 @@ import { Theme } from '@emotion/react';
 
 const colors = {
   mint: '#04CBA4',
-  blut: '#4077C9',
+  blue: '#4077C9',
   yellow: '#FFD755',
 };
 
