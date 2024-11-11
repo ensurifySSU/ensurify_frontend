@@ -24,14 +24,17 @@ const Login = () => {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { username, password } = formValues;
-    if (!username || !password) return;
+    if (!username || !password) {
+      alert('아이디 또는 비밀번호가 존재하지 않습니다.');
+      return;
+    }
 
     try {
       console.log(username, password);
       //서버 요청
       navigation('/home');
     } catch {
-      alert('아이디 또는 비밀번호가 존재하지 않습니다.');
+      alert('로그인에 실패하였습니다.');
     }
   };
 
