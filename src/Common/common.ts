@@ -1,5 +1,18 @@
 import styled from "@emotion/styled";
 
+interface StyleProps {
+  width?: string;
+  height?: string;
+  maxWidth?: string;
+  maxHeight?: string;
+  minWidth?: string;
+  minHeight?: string;
+  padding?: string;
+  margin?: string;
+  alginItems?: string;
+  justifyContent?: string;
+  flexDirection?: string;
+}
 
 export const Txt12 = styled.span`
   font-size: 0.75rem; /* 12px */
@@ -53,10 +66,19 @@ export const Txt20Bold = styled.span`
   line-height: 1.75rem; /* 28px */
 `;
 
-export const FlexContainer = styled.div`
+export const FlexContainer = styled.div<StyleProps>`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: ${(props) => props.flexDirection || "column"};
+  align-items: ${(props) => props.alginItems || "center"};
+  justify-content: ${(props) => props.justifyContent || "justify-content"};
+  width: ${(props) => props.width || "fit-content"};
+  height: ${(props) => props.height || "fit-content"};
+  max-width: ${(props) => props.maxWidth || ""};
+  max-height: ${(props) => props.maxHeight || ""};
+  min-width: ${(props) => props.minWidth || ""};
+  min-height: ${(props) => props.minHeight || ""};
+  padding: ${(props) => props.padding || ""};
+  margin: ${(props) => props.margin || ""};
 `;
 
 export const FlexCenterContainer = styled.div`
@@ -126,4 +148,13 @@ export const LineEEE = styled.div`
   width: 100%;
   margin-top: 16px;
   margin-bottom: 16px;
+`;
+
+export const BlueBtn = styled.button`
+  width: 200px;
+  height: 70px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
 `;
