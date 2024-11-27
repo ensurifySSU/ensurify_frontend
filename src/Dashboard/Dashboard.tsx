@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import DashboardTable from './components/DashboardTable';
+import CategoryButton from './components/CategoryButton';
 
 const SIDESHEETWIDTH = 28;
 
@@ -19,7 +20,9 @@ const Dashboard = () => {
           <StAgentName>상담원 이름</StAgentName>
           <StBankName>은행이름</StBankName>
         </StAgentInfo>
-        <div>카테고리</div>
+        <StCategory>
+          <CategoryButton content="카테고리 이름" />
+        </StCategory>
       </StSideSheet>
       <StDashboard>
         <div>
@@ -55,7 +58,7 @@ const StAgentInfo = styled.div`
   gap: 1rem;
   align-items: center;
 
-  padding-bottom: 2rem;
+  padding: 3rem 0;
 
   border-bottom: 1px solid #000;
 `;
@@ -68,6 +71,10 @@ const StAgentName = styled.p`
 const StBankName = styled.p`
   font-size: 1.5rem;
   font-weight: 500;
+`;
+
+const StCategory = styled.div`
+  padding: 2rem 0;
 `;
 
 const StDashboard = styled.div`
