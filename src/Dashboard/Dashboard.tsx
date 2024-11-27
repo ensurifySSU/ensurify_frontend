@@ -1,13 +1,20 @@
 import styled from '@emotion/styled';
+import DashboardTable from './components/DashboardTable';
 
 const SIDESHEETWIDTH = 28;
 
 const Dashboard = () => {
   return (
     <StContainer>
-      <StSideSheet>사이드시트</StSideSheet>
+      <StSideSheet>
+        <div>상담원 정보</div>
+        <div>카테고리</div>
+      </StSideSheet>
       <StDashboard>
-        <div>대시보드 부분</div>
+        <div>
+          <h1>계약내역</h1>
+          <DashboardTable />
+        </div>
       </StDashboard>
     </StContainer>
   );
@@ -36,8 +43,19 @@ const StDashboard = styled.div`
   padding: 2rem;
 
   & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
     height: 100%;
+    padding: 2rem;
+
     background-color: white;
     border-radius: 10px;
+
+    & > h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
   }
 `;
