@@ -7,7 +7,18 @@ const Dashboard = () => {
   return (
     <StContainer>
       <StSideSheet>
-        <div>상담원 정보</div>
+        <StAgentInfo>
+          <div
+            style={{
+              width: '7rem',
+              height: '7rem',
+              backgroundColor: '#ccc',
+              borderRadius: '100px',
+            }}
+          />
+          <StAgentName>상담원 이름</StAgentName>
+          <StBankName>은행이름</StBankName>
+        </StAgentInfo>
         <div>카테고리</div>
       </StSideSheet>
       <StDashboard>
@@ -33,8 +44,30 @@ const StSideSheet = styled.aside`
 
   width: ${SIDESHEETWIDTH}rem;
   height: 100%;
+  padding: 2rem;
 
   background-color: white;
+`;
+
+const StAgentInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  padding-bottom: 2rem;
+
+  border-bottom: 1px solid #000;
+`;
+
+const StAgentName = styled.p`
+  font-size: 2rem;
+  font-weight: 700;
+`;
+
+const StBankName = styled.p`
+  font-size: 1.5rem;
+  font-weight: 500;
 `;
 
 const StDashboard = styled.div`
