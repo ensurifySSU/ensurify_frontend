@@ -4,6 +4,7 @@ import { ILoginValue } from './types/loginTypes';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import LoginBG from './components/LoginBG';
 import { useNavigate } from 'react-router-dom';
+import Button from '../Common/components/Button';
 
 const Login = () => {
   const navigation = useNavigate();
@@ -40,38 +41,40 @@ const Login = () => {
 
   return (
     <StContainer>
-      <StIntroSection>
-        <StIntro>
-          <h1>계약의 확실성과</h1>
-          <h1>단순함을 한번에</h1>
-        </StIntro>
-        <div>
-          <LogoBig />
-        </div>
-      </StIntroSection>
-      <StLoginForm onSubmit={onSubmit}>
-        <StLogin>Login</StLogin>
-        <StInputBox>
-          <label htmlFor="username" />
-          <StInput
-            id="username"
-            placeholder="username"
-            value={formValues.username}
-            onChange={onchange}
-          />
-        </StInputBox>
-        <StInputBox>
-          <label htmlFor="password" />
-          <StInput
-            id="password"
-            placeholder="password"
-            value={formValues.password}
-            onChange={onchange}
-          />
-        </StInputBox>
-        <StButton>로그인</StButton>
-      </StLoginForm>
-      <LoginBG />
+      <StWrapper>
+        <StIntroSection>
+          <StIntro>
+            <h1>계약의 확실성과</h1>
+            <h1>단순함을 한번에</h1>
+          </StIntro>
+          <div>
+            <LogoBig />
+          </div>
+        </StIntroSection>
+        <StLoginForm onSubmit={onSubmit}>
+          <StLogin>Login</StLogin>
+          <StInputBox>
+            <label htmlFor="username" />
+            <StInput
+              id="username"
+              placeholder="username"
+              value={formValues.username}
+              onChange={onchange}
+            />
+          </StInputBox>
+          <StInputBox>
+            <label htmlFor="password" />
+            <StInput
+              id="password"
+              placeholder="password"
+              value={formValues.password}
+              onChange={onchange}
+            />
+          </StInputBox>
+          <Button content="login" />
+        </StLoginForm>
+        <LoginBG />
+      </StWrapper>
     </StContainer>
   );
 };
@@ -79,6 +82,15 @@ const Login = () => {
 export default Login;
 
 const StContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vh;
+`;
+
+const StWrapper = styled.div`
   display: flex;
   gap: 12rem;
 `;
@@ -135,17 +147,4 @@ const StInput = styled.input`
     font-weight: 200;
     color: #ccc;
   }
-`;
-
-const StButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-top: 5rem;
-  padding: 1rem 0;
-
-  color: #fff;
-
-  background-color: ${({ theme }) => theme.colors.mint};
 `;
