@@ -5,6 +5,8 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import LoginBG from './components/LoginBG';
 import { useNavigate } from 'react-router-dom';
 import Button from '../Common/components/Button';
+import { useMutation } from '@tanstack/react-query';
+import { login } from './services';
 
 const Login = () => {
   const navigation = useNavigate();
@@ -22,20 +24,27 @@ const Login = () => {
     });
   };
 
+  const onLogin = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      sessionStorage.setItem('token', data.accessToken);
+      console.log(data);
+      navigation('/home');
+      window.location.reload();
+    },
+    onError: (error) => {
+      console.log('에러 발생! 아래 메시지를 확인해주세요.', error);
+    },
+  });
+
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { username, password } = formValues;
     if (!username || !password) {
       alert('아이디 또는 비밀번호가 존재하지 않습니다.');
       return;
-    }
-
-    try {
-      console.log(username, password);
-      //서버 요청
-      navigation('/home');
-    } catch {
-      alert('로그인에 실패하였습니다.');
+    } else {
+      onLogin.mutate(formValues);
     }
   };
 
