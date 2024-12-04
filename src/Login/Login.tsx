@@ -27,7 +27,7 @@ const Login = () => {
   const onLogin = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      sessionStorage.setItem('token', data.accessToken);
+      sessionStorage.setItem('token', data.result.accessToken);
       console.log(data);
       navigation('/home');
       window.location.reload();
