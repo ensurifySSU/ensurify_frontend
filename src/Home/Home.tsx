@@ -2,8 +2,10 @@ import styled from '@emotion/styled';
 import { LogoBig } from '../Common/assets/0_index';
 import Button from '../Common/components/Button';
 import HomeCard from './components/HomeCard';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   return (
     <Stcontainer>
       <StWrapper>
@@ -13,7 +15,7 @@ const Home = () => {
             <LogoBig />
           </StIntro>
 
-          <Button content="새 계약 생성하기" />
+          <Button content="새 계약 생성하기" handleClick={() => navigate('/createRoom')} />
         </StIntroSection>
         <HomeCard />
       </StWrapper>
