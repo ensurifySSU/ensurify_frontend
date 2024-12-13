@@ -3,9 +3,9 @@ import Identification from './components/Identification/Identification';
 import { useState } from 'react';
 
 const ContractRoom = () => {
-  const [isDoneIdent] = useState(false);
+  const [isDoneIdent] = useState<boolean>(false);
   const renderPage = () => {
-    return isDoneIdent ? <Identification /> : <Contract />;
+    return isDoneIdent ? <Contract /> : <Identification />;
   };
   return renderPage();
 };
