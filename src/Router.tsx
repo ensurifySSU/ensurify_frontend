@@ -22,6 +22,10 @@ const router = createBrowserRouter([
         path: '/createRoom',
         element: <CreateRoom />,
       },
+      {
+        path: '/contract/:roomId',
+        element: <div>contract</div>,
+      },
     ],
   },
   {
