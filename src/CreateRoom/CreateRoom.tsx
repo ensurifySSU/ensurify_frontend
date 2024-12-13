@@ -3,6 +3,7 @@ import { RightSideSheetWidth } from '../Common/constants/SIZES';
 import { IcSearch } from './assets/0_index';
 import SearchItem from './components/SearchItem';
 import Button from '../Common/components/Button';
+import { LeftPrimarySection, RightSideSheet } from '../Common/styles/commonStyles';
 
 const Input = ({ placeholder }: { placeholder: string }) => {
   return (
@@ -39,7 +40,7 @@ const 고객정보 = () => {
 const CreateRoom = () => {
   return (
     <StContainer>
-      <StSection>
+      <LeftPrimarySection>
         <SelectableBox.container>
           <SelectableBox.label>계약 선택</SelectableBox.label>
           <Input placeholder="계약명을 검색하세요" />
@@ -50,8 +51,8 @@ const CreateRoom = () => {
           <Input placeholder="고객명을 검색하세요" />
           <SearchItem title="오유은" tag="이메일" />
         </SelectableBox.container>
-      </StSection>
-      <StSideSheet.container>
+      </LeftPrimarySection>
+      <RightSideSheet>
         <StSideSheet.box>
           <StSideSheet.label>계약 상품</StSideSheet.label>
           <계약상품 />
@@ -61,7 +62,7 @@ const CreateRoom = () => {
           <고객정보 />
         </StSideSheet.box>
         <Button width="70%" content="새 계약 생성하기" isActive={false} handleClick={() => {}} />
-      </StSideSheet.container>
+      </RightSideSheet>
     </StContainer>
   );
 };
@@ -105,16 +106,6 @@ const StSideSheet = {
     color: #000;
   `,
 };
-
-const StSection = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-
-  width: calc(100% - ${RightSideSheetWidth}rem);
-  height: 100%;
-  padding: 2rem;
-`;
 
 const SelectableBox = {
   container: styled.div`
