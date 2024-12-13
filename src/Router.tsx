@@ -4,7 +4,7 @@ import Home from './Home/Home';
 import MainLayout from './Common/components/Layout/MainLayout';
 import Dashboard from './Dashboard/Dashboard';
 import CreateRoom from './CreateRoom/CreateRoom';
-import Contract from './Contract/Contract';
+import ContractRoom from './Contract/Contractroom';
 
 const router = createBrowserRouter([
   {
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/contract/:roomId',
-        element: <Contract />,
+        element: <ContractRoom />,
       },
     ],
   },
