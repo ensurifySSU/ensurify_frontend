@@ -4,6 +4,7 @@ import Home from './Home/Home';
 import MainLayout from './Common/components/Layout/MainLayout';
 import Dashboard from './Dashboard/Dashboard';
 import CreateRoom from './CreateRoom/CreateRoom';
+import WebRtc from './Contract/components/WebRTC/WebRtc';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/webRTC',
+    element: <WebRtc />,
   },
 ]);
 
