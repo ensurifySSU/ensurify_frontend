@@ -9,10 +9,10 @@ export const RightSideSheet = styled.aside`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 
   width: ${RightSideSheetWidth}rem;
-  height: calc(100% - 6rem);
+  height: calc(100vh - 6rem);
   padding: 5rem;
 
   background-color: white;

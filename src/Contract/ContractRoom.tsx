@@ -1,10 +1,11 @@
+import Contract from './components/Contract/Contract';
 import Identification from './components/Identification/Identification';
 import { useState } from 'react';
 
 const ContractRoom = () => {
-  const [isDoneIdent] = useState(true);
+  const [isDoneIdent] = useState(false);
   const renderPage = () => {
-    return isDoneIdent ? <Identification /> : <div>인증 완료</div>;
+    return isDoneIdent ? <Identification /> : <Contract />;
   };
   return renderPage();
 };
