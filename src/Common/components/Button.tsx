@@ -4,7 +4,7 @@ interface IButtonProps {
   width?: string;
   content: string;
   isActive?: boolean;
-  handleClick: () => void;
+  handleClick?: () => void;
 }
 
 const Button = ({ width, content, isActive = true, handleClick }: IButtonProps) => {
