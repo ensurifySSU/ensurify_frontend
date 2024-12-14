@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { bankLogo } from '../assets/0_index';
 
 const HomeCard = ({ name }: { name: string }) => {
-  const navigate = useNavigate();
+  const navigation = useNavigate();
   return (
     <StContainer>
       <StBankInfo>
@@ -11,7 +11,7 @@ const HomeCard = ({ name }: { name: string }) => {
           <img src={bankLogo} alt="은행 로고" />
           <span>숭실은행</span>
         </div>
-        <StGoDashboard onClick={() => navigate('/dashboard')}>
+        <StGoDashboard onClick={() => navigation('/dashboard')}>
           계약 내역 보러가기 &gt;
         </StGoDashboard>
       </StBankInfo>

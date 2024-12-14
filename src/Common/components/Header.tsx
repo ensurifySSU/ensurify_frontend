@@ -1,10 +1,12 @@
 import styled from '@emotion/styled';
 import { Logo } from '../assets/0_index';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigation = useNavigate();
   return (
     <StContainer>
-      <StLogo />
+      <StLogo onClick={() => navigation('/home')} />
     </StContainer>
   );
 };
@@ -29,5 +31,6 @@ const StContainer = styled.header`
 `;
 
 const StLogo = styled(Logo)`
+  cursor: pointer;
   width: 10rem;
 `;
