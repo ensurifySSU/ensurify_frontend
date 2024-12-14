@@ -1,8 +1,16 @@
 import styled from '@emotion/styled';
 
-const SearchItem = ({ title, tag }: { title: string; tag: string }) => {
+const SearchItem = ({
+  title,
+  tag,
+  onClick,
+}: {
+  title: string;
+  tag: string;
+  onClick: () => void;
+}) => {
   return (
-    <StContainer>
+    <StContainer onClick={onClick}>
       <StTitle>{title}</StTitle>
       <StTag>{tag}</StTag>
     </StContainer>

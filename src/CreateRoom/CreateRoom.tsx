@@ -4,6 +4,13 @@ import { IcSearch } from './assets/0_index';
 import SearchItem from './components/SearchItem';
 import Button from '../Common/components/Button';
 import { LeftPrimarySection, RightSideSheet } from '../Common/styles/commonStyles';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getClientDetailInfo, getClientList, getContractDocsList } from '../Common/apis/apis';
+import { IClientListType, IContractDocsType, IcreateRoomValue } from './types/createRoomTypes';
+import { useRoomStore } from '../Common/stores/seletedContractStore';
+import { Suspense } from 'react';
+import { createRoom } from './services';
+import { useNavigate } from 'react-router-dom';
 
 const Input = ({ placeholder }: { placeholder: string }) => {
   return (
@@ -15,41 +22,122 @@ const Input = ({ placeholder }: { placeholder: string }) => {
 };
 
 const 계약상품 = () => {
+  const selectedContract = useRoomStore((state) => state.selectedContract);
+  if (!selectedContract) return;
+
   return (
     <StSeletedContaienr>
-      <St계약상품.title>개인형 퇴직 어쩌고저쩌고어쩌고저쩌고</St계약상품.title>
-      <St계약상품.tag>카테고리</St계약상품.tag>
+      <St계약상품.title>{selectedContract?.name}</St계약상품.title>
+      <St계약상품.tag>{selectedContract?.category}</St계약상품.tag>
     </StSeletedContaienr>
   );
 };
 
 const 고객정보 = () => {
+  const selectedClient = useRoomStore((state) => state.selectedClient);
+
+  const { data } = useQuery({
+    queryKey: ['clientDetail', selectedClient?.clientId],
+    queryFn: () => getClientDetailInfo(selectedClient?.clientId),
+    enabled: !!selectedClient?.clientId,
+  });
+
+  if (!selectedClient) return;
+
   return (
     <StSeletedContaienr>
       <St고객정보.wrapper>
-        <St고객정보.name>오유은</St고객정보.name>
-        <St고객정보.userInfo>남 | 25</St고객정보.userInfo>
+        <St고객정보.name>{data?.result?.name}</St고객정보.name>
+        <St고객정보.userInfo>
+          {data?.result?.gender} | {data?.result?.age}
+        </St고객정보.userInfo>
         <br />
         <St고객정보.label>링크 전송 이메일</St고객정보.label>
-        <St고객정보.email>email@naver.com</St고객정보.email>
+        <St고객정보.email>{data?.result?.email}</St고객정보.email>
       </St고객정보.wrapper>
     </StSeletedContaienr>
   );
 };
 
 const CreateRoom = () => {
+  const navigation = useNavigate();
+
+  const { data: clientList } = useQuery({
+    queryKey: ['clients'],
+    queryFn: getClientList,
+  });
+
+  const { data: contractDocsList } = useQuery({
+    queryKey: ['docs'],
+    queryFn: getContractDocsList,
+  });
+
+  const setSelectedContract = useRoomStore((state) => state.setSelectedContract);
+  const selectedContract = useRoomStore((state) => state.selectedContract);
+  const setSelectedClient = useRoomStore((state) => state.setSelectedClient);
+  const selectedClient = useRoomStore((state) => state.selectedClient);
+
+  const onCreateRoom = useMutation({
+    mutationFn: createRoom,
+    onSuccess: (data) => {
+      navigation(`/contract/${data.result.roomId}`);
+    },
+    onError: (error) => {
+      console.log('에러 발생! 아래 메시지를 확인해주세요.', error);
+    },
+  });
+
+  const handleCreateRoom = () => {
+    if (!selectedContract?.contractDocumentId || !selectedClient?.clientId) return;
+    const requstData: IcreateRoomValue = {
+      contractDocumentId: selectedContract.contractDocumentId,
+      clientId: selectedClient.clientId,
+    };
+    onCreateRoom.mutate(requstData);
+  };
+
   return (
     <StContainer>
       <LeftPrimarySection>
         <SelectableBox.container>
           <SelectableBox.label>계약 선택</SelectableBox.label>
           <Input placeholder="계약명을 검색하세요" />
-          <SearchItem title="계약명계약명계약명계약명계약명계약명계약명" tag="카테고리" />
+          {contractDocsList?.result?.contractDocumentList?.map((item: IContractDocsType) => {
+            return (
+              <SearchItem
+                key={item.contractDocumentId}
+                title={item.name}
+                tag={item.category}
+                onClick={() =>
+                  setSelectedContract({
+                    contractDocumentId: item.contractDocumentId,
+                    name: item.name,
+                    category: item.category,
+                  })
+                }
+              />
+            );
+          })}
         </SelectableBox.container>
         <SelectableBox.container>
           <SelectableBox.label>고객 선택</SelectableBox.label>
           <Input placeholder="고객명을 검색하세요" />
-          <SearchItem title="오유은" tag="이메일" />
+          {clientList?.result?.clientList?.map((item: IClientListType) => {
+            return (
+              <SearchItem
+                key={item.clientId}
+                title={item.name}
+                tag={item.email}
+                onClick={() =>
+                  setSelectedClient({
+                    clientId: item.clientId,
+                    name: item.name,
+                    email: item.email,
+                  })
+                }
+              />
+            );
+          })}
         </SelectableBox.container>
       </LeftPrimarySection>
       <RightSideSheet>
@@ -59,9 +147,16 @@ const CreateRoom = () => {
         </StSideSheet.box>
         <StSideSheet.box>
           <StSideSheet.label>고객 정보</StSideSheet.label>
-          <고객정보 />
+          <Suspense fallback={<>loading..</>}>
+            <고객정보 />
+          </Suspense>
         </StSideSheet.box>
-        <Button width="70%" content="새 계약 생성하기" isActive={false} handleClick={() => {}} />
+        <Button
+          width="70%"
+          content="새 계약 생성하기"
+          isActive={Boolean(selectedContract && selectedClient)}
+          handleClick={handleCreateRoom}
+        />
       </RightSideSheet>
     </StContainer>
   );
@@ -158,6 +253,8 @@ const StSeletedContaienr = styled.div`
   width: 100%;
   height: fit-content;
   padding: 2rem;
+
+  font-size: 1.3rem;
 
   background-color: rgb(255 215 85 / 20%);
   border-radius: 10px;
