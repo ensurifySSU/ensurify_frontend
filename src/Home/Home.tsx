@@ -4,7 +4,7 @@ import Button from '../Common/components/Button';
 import HomeCard from './components/HomeCard';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getUserInfo } from '../Common/apis/apis';
+import { getUserInfo } from '../Common/apis/servies';
 import { Suspense } from 'react';
 
 const Home = () => {

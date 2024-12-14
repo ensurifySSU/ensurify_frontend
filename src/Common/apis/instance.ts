@@ -27,3 +27,19 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      window.location.href = '/login';
+    }
+
+    return Promise.reject(error);
+  },
+);

@@ -1,24 +1,22 @@
 import instance from './instance';
 
-const base_url = import.meta.env.VITE_BASE_URL;
-
 export const getUserInfo = async () => {
-  const { data } = await instance.get(`${base_url}/users`);
+  const { data } = await instance.get(`/users`);
   return data;
 };
 
 export const getClientList = async () => {
-  const { data } = await instance.get(`${base_url}/clients`);
+  const { data } = await instance.get(`/clients`);
   return data;
 };
 
 export const getContractDocsList = async () => {
-  const { data } = await instance.get(`${base_url}/contracts/docs`);
+  const { data } = await instance.get(`/contracts/docs`);
   return data;
 };
 
 export const getClientDetailInfo = async (clientId: number | undefined) => {
   if (!clientId) return;
-  const { data } = await instance.get(`${base_url}/clients/${clientId}`);
+  const { data } = await instance.get(`/clients/${clientId}`);
   return data;
 };
