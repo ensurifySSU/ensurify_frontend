@@ -3,18 +3,17 @@ import { LogoBig } from '../Common/assets/0_index';
 import Button from '../Common/components/Button';
 import HomeCard from './components/HomeCard';
 import { useNavigate } from 'react-router-dom';
-
-const base_url = import.meta.env.VITE_BASE_URL;
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '../Common/apis/apis';
+import { Suspense } from 'react';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const getSearchBot = async (searchValue: string) => {
-    const { data }: { data: ITRADEBOTS[] } = await instance.get(
-      `${base_url}/api/trade-bots?search=${searchValue}`,
-    );
-    return data;
-  };
+  const { data } = useQuery({
+    queryKey: ['users'],
+    queryFn: getUserInfo,
+  });
 
   return (
     <Stcontainer>
@@ -26,7 +25,9 @@ const Home = () => {
           </StIntro>
           <Button content="새 계약 생성하기" handleClick={() => navigate('/createRoom')} />
         </StIntroSection>
-        <HomeCard />
+        <Suspense fallback={<div>로딩중</div>}>
+          <HomeCard name={data?.result?.name} />
+        </Suspense>
       </StWrapper>
     </Stcontainer>
   );
@@ -47,6 +48,7 @@ const StWrapper = styled.div`
   justify-content: center;
 
   height: 100%;
+  padding: 5rem;
 
   background-color: white;
   border-radius: 35px 35px 0 0;

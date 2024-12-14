@@ -11,7 +11,7 @@ export default instance;
 
 instance.interceptors.request.use(
   (config) => {
-    const ACCESS_TOKEN = localStorage.getItem('USER_ADDRESS');
+    const ACCESS_TOKEN = sessionStorage.getItem('token');
 
     if (!ACCESS_TOKEN) {
       window.location.href = '/login';
@@ -19,7 +19,7 @@ instance.interceptors.request.use(
       return config;
     }
 
-    config.headers.Authorization = ACCESS_TOKEN;
+    config.headers.Authorization = `Bearer ${ACCESS_TOKEN}`;
 
     return config;
   },
