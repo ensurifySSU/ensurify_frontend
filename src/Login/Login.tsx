@@ -17,7 +17,6 @@ const Login = () => {
 
   const onchange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.currentTarget;
-    console.log(id, value);
     setFormValues({
       ...formValues,
       [id]: value,
@@ -28,7 +27,6 @@ const Login = () => {
     mutationFn: login,
     onSuccess: (data) => {
       sessionStorage.setItem('token', data.result.accessToken);
-      console.log(data);
       navigation('/home');
       window.location.reload();
     },
