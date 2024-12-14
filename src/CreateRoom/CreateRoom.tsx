@@ -3,6 +3,7 @@ import { RightSideSheetWidth } from '../Common/constants/SIZES';
 import { IcSearch } from './assets/0_index';
 import SearchItem from './components/SearchItem';
 import Button from '../Common/components/Button';
+import { LeftPrimarySection, RightSideSheet } from '../Common/styles/commonStyles';
 
 const Input = ({ placeholder }: { placeholder: string }) => {
   return (
@@ -13,19 +14,33 @@ const Input = ({ placeholder }: { placeholder: string }) => {
   );
 };
 
+const 계약상품 = () => {
+  return (
+    <StSeletedContaienr>
+      <St계약상품.title>개인형 퇴직 어쩌고저쩌고어쩌고저쩌고</St계약상품.title>
+      <St계약상품.tag>카테고리</St계약상품.tag>
+    </StSeletedContaienr>
+  );
+};
+
+const 고객정보 = () => {
+  return (
+    <StSeletedContaienr>
+      <St고객정보.wrapper>
+        <St고객정보.name>오유은</St고객정보.name>
+        <St고객정보.userInfo>남 | 25</St고객정보.userInfo>
+        <br />
+        <St고객정보.label>링크 전송 이메일</St고객정보.label>
+        <St고객정보.email>email@naver.com</St고객정보.email>
+      </St고객정보.wrapper>
+    </StSeletedContaienr>
+  );
+};
+
 const CreateRoom = () => {
   return (
     <StContainer>
-      <StSideSheet.container>
-        <StSideSheet.box>
-          <StSideSheet.label>계약 상품</StSideSheet.label>
-        </StSideSheet.box>
-        <StSideSheet.box>
-          <StSideSheet.label>계약 정보</StSideSheet.label>
-        </StSideSheet.box>
-        <Button width="70%" content="새 계약 생성하기" isActive={false} />
-      </StSideSheet.container>
-      <StSection>
+      <LeftPrimarySection>
         <SelectableBox.container>
           <SelectableBox.label>계약 선택</SelectableBox.label>
           <Input placeholder="계약명을 검색하세요" />
@@ -36,7 +51,18 @@ const CreateRoom = () => {
           <Input placeholder="고객명을 검색하세요" />
           <SearchItem title="오유은" tag="이메일" />
         </SelectableBox.container>
-      </StSection>
+      </LeftPrimarySection>
+      <RightSideSheet>
+        <StSideSheet.box>
+          <StSideSheet.label>계약 상품</StSideSheet.label>
+          <계약상품 />
+        </StSideSheet.box>
+        <StSideSheet.box>
+          <StSideSheet.label>고객 정보</StSideSheet.label>
+          <고객정보 />
+        </StSideSheet.box>
+        <Button width="70%" content="새 계약 생성하기" isActive={false} handleClick={() => {}} />
+      </RightSideSheet>
     </StContainer>
   );
 };
@@ -56,7 +82,7 @@ const StSideSheet = {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
 
     width: ${RightSideSheetWidth}rem;
     height: calc(100% - 6rem);
@@ -66,9 +92,13 @@ const StSideSheet = {
   `,
   box: styled.div`
     position: relative;
+
     display: flex;
     flex-direction: column;
+    gap: 2rem;
+
     width: 100%;
+    height: 40%;
   `,
   label: styled.p`
     font-size: 2rem;
@@ -76,16 +106,6 @@ const StSideSheet = {
     color: #000;
   `,
 };
-
-const StSection = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-
-  width: calc(100% - ${RightSideSheetWidth}rem);
-  height: 100%;
-  padding: 2rem;
-`;
 
 const SelectableBox = {
   container: styled.div`
@@ -127,5 +147,60 @@ const StInput = {
     background-color: transparent;
     border: none;
     outline: none;
+  `,
+};
+
+const StSeletedContaienr = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+
+  width: 100%;
+  height: fit-content;
+  padding: 2rem;
+
+  background-color: rgb(255 215 85 / 20%);
+  border-radius: 10px;
+`;
+
+const St계약상품 = {
+  title: styled.p`
+    overflow: hidden;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #000;
+  `,
+  tag: styled.p`
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: ${({ theme }) => theme.colors.blue};
+    white-space: nowrap;
+  `,
+};
+
+const St고객정보 = {
+  wrapper: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  `,
+  name: styled.p`
+    overflow: hidden;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #000;
+  `,
+  userInfo: styled.p`
+    font-size: 1.4rem;
+  `,
+  label: styled.p`
+    font-size: 1.3rem;
+    color: #5c5c5c;
+  `,
+  email: styled.p`
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #000;
+    white-space: nowrap;
   `,
 };

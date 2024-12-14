@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 const HomeCard = () => {
+  const navigate = useNavigate();
   return (
     <StContainer>
       <StBankInfo>
@@ -8,7 +10,9 @@ const HomeCard = () => {
           <span>이미지</span>
           <span>숭실은행</span>
         </div>
-        <StGoDashboard>계약 내역 보러가기 &gt;</StGoDashboard>
+        <StGoDashboard onClick={() => navigate('/dashboard')}>
+          계약 내역 보러가기 &gt;
+        </StGoDashboard>
       </StBankInfo>
       <StAgentInfo>
         <StLabel>상담원 정보</StLabel>

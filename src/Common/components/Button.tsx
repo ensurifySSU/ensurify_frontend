@@ -4,11 +4,12 @@ interface IButtonProps {
   width?: string;
   content: string;
   isActive?: boolean;
+  handleClick: () => void;
 }
 
-const Button = ({ width, content, isActive = true }: IButtonProps) => {
+const Button = ({ width, content, isActive = true, handleClick }: IButtonProps) => {
   return (
-    <StBtn width={width} isActive={isActive}>
+    <StBtn width={width} isActive={isActive} onClick={handleClick}>
       {content}
     </StBtn>
   );

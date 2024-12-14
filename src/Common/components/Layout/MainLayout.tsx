@@ -18,6 +18,7 @@ export default MainLayout;
 const StContainer = styled.div`
   width: 100vw;
   height: calc(100vh - 6rem);
+  min-height: 560px;
 `;
 
 const StMain = styled.main`
