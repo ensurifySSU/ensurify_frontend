@@ -4,11 +4,11 @@ import Button from '../Common/components/Button';
 import HomeCard from './components/HomeCard';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getUserInfo } from '../Common/apis/apis';
+import { getUserInfo } from '../Common/apis/servies';
 import { Suspense } from 'react';
 
 const Home = () => {
-  const navigate = useNavigate();
+  const navigation = useNavigate();
 
   const { data } = useQuery({
     queryKey: ['users'],
@@ -23,7 +23,7 @@ const Home = () => {
             <h1>계약의 확실성과 단순함을 한번에</h1>
             <LogoBig />
           </StIntro>
-          <Button content="새 계약 생성하기" handleClick={() => navigate('/createRoom')} />
+          <Button content="새 계약 생성하기" handleClick={() => navigation('/createRoom')} />
         </StIntroSection>
         <Suspense fallback={<div>로딩중</div>}>
           <HomeCard name={data?.result?.name} />

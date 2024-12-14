@@ -5,7 +5,7 @@ import SearchItem from './components/SearchItem';
 import Button from '../Common/components/Button';
 import { LeftPrimarySection, RightSideSheet } from '../Common/styles/commonStyles';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getClientDetailInfo, getClientList, getContractDocsList } from '../Common/apis/apis';
+import { getClientDetailInfo, getClientList, getContractDocsList } from '../Common/apis/servies';
 import { IClientListType, IContractDocsType, IcreateRoomValue } from './types/createRoomTypes';
 import { useRoomStore } from '../Common/stores/seletedContractStore';
 import { Suspense } from 'react';
