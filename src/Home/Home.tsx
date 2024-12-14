@@ -4,8 +4,18 @@ import Button from '../Common/components/Button';
 import HomeCard from './components/HomeCard';
 import { useNavigate } from 'react-router-dom';
 
+const base_url = import.meta.env.VITE_BASE_URL;
+
 const Home = () => {
   const navigate = useNavigate();
+
+  const getSearchBot = async (searchValue: string) => {
+    const { data }: { data: ITRADEBOTS[] } = await instance.get(
+      `${base_url}/api/trade-bots?search=${searchValue}`,
+    );
+    return data;
+  };
+
   return (
     <Stcontainer>
       <StWrapper>
@@ -14,7 +24,6 @@ const Home = () => {
             <h1>계약의 확실성과 단순함을 한번에</h1>
             <LogoBig />
           </StIntro>
-
           <Button content="새 계약 생성하기" handleClick={() => navigate('/createRoom')} />
         </StIntroSection>
         <HomeCard />
