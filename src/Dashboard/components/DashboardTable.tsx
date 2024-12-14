@@ -1,26 +1,14 @@
 import styled from '@emotion/styled';
 import { TABLE_LABEL } from '../contants/TABLE_LABEL';
-
-const contractList = [
-  {
-    contractId: 2,
-    name: '계약서1',
-    category: 'IRP',
-    client: '짱구',
-    date: '2024.11.08',
-    pdfUrl: '...',
-  },
-  {
-    contractId: 3,
-    name: '계약서2',
-    category: 'DB',
-    client: '짱구',
-    date: '2024.11.08',
-    pdfUrl: '...',
-  },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getHistoryContract } from '../servies';
+import { IHistoryContract } from '../types/historyContractType';
 
 const DashboardTable = () => {
+  const { data } = useQuery({
+    queryKey: [history],
+    queryFn: getHistoryContract,
+  });
   return (
     <StTable>
       <thead>
@@ -31,7 +19,7 @@ const DashboardTable = () => {
         </StTableRow>
       </thead>
       <tbody>
-        {contractList.map((item) => (
+        {data?.result?.contractList.map((item: IHistoryContract) => (
           <StTableRow key={item.contractId}>
             <StTableCell>{item.name}</StTableCell>
             <StTableCell>{item.category}</StTableCell>
