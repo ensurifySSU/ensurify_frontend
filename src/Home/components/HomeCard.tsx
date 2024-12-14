@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
+import { bankLogo } from '../assets/0_index';
 
-const HomeCard = () => {
+const HomeCard = ({ name }: { name: string }) => {
   const navigate = useNavigate();
   return (
     <StContainer>
       <StBankInfo>
         <div>
-          <span>이미지</span>
+          <img src={bankLogo} alt="은행 로고" />
           <span>숭실은행</span>
         </div>
         <StGoDashboard onClick={() => navigate('/dashboard')}>
@@ -17,7 +18,7 @@ const HomeCard = () => {
       <StAgentInfo>
         <StLabel>상담원 정보</StLabel>
         <div style={{ width: '12rem', height: '15rem', backgroundColor: '#ccc' }} />
-        <p>상담원 이름</p>
+        <p>{name}</p>
       </StAgentInfo>
     </StContainer>
   );
@@ -50,6 +51,10 @@ const StBankInfo = styled.div`
 
     font-size: 2rem;
     font-weight: 700;
+  }
+
+  & img {
+    width: 3.8rem;
   }
 `;
 
