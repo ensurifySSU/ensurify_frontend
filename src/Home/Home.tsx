@@ -5,17 +5,24 @@ import HomeCard from './components/HomeCard';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getUserInfo } from '../Common/apis/servies';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useUserInfo } from '../Common/stores/userInfoStore';
 
 const Home = () => {
   const navigation = useNavigate();
+  const { username, setUsername } = useUserInfo();
 
   const { data } = useQuery({
     queryKey: ['users'],
     queryFn: getUserInfo,
   });
 
-  return (
+  useEffect(() => {
+    if (!data) return;
+    if (username !== data?.result?.name) setUsername(data?.result?.name);
+  }, [data]);
+
+  http: return (
     <Stcontainer>
       <StWrapper>
         <StIntroSection>
