@@ -1,27 +1,34 @@
 import styled from '@emotion/styled';
 import DashboardTable from './components/DashboardTable';
 import CategoryButton from './components/CategoryButton';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '../Common/apis/servies';
+import { bankLogo } from '../Home/assets/0_index';
 
 const SIDESHEETWIDTH = 28;
 
 const Dashboard = () => {
+  const { data } = useQuery({
+    queryKey: ['users'],
+    queryFn: getUserInfo,
+  });
   return (
     <StContainer>
       <StSideSheet>
         <StAgentInfo>
-          <div
+          <img
+            src={bankLogo}
             style={{
-              width: '7rem',
-              height: '7rem',
-              backgroundColor: '#ccc',
+              width: '6rem',
+              height: '6rem',
               borderRadius: '100px',
             }}
           />
-          <StAgentName>상담원 이름</StAgentName>
-          <StBankName>은행이름</StBankName>
+          <StAgentName>{data?.result.name}</StAgentName>
+          <StBankName>숭실은행</StBankName>
         </StAgentInfo>
         <StCategory>
-          <CategoryButton content="카테고리 이름" />
+          <CategoryButton content="IRP" />
         </StCategory>
       </StSideSheet>
       <StDashboard>
