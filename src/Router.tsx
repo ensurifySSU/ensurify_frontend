@@ -25,11 +25,11 @@ const router = createBrowserRouter([
         element: <CreateRoom />,
       },
       {
-        path: '/connecting/:roomId',
+        path: '/connecting/:roomId/:clientId',
         element: <Connecting />,
       },
       {
-        path: '/contract/:roomId',
+        path: '/contract/:roomId/:clientId',
         element: <ContractRoom />,
       },
     ],
