@@ -24,14 +24,18 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
   const [isDoneIdent, setIsDoneIdent] = useState(false);
 
   // useRef로 videoRef 선언
-  const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  // const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
 
-  const { startVideo } = useWebRTC({ signaling, sessionId, localVideoRef, remoteVideoRef, roomId });
+  const { startVideo, localVideoRef, remoteVideoRef } = useWebRTC({
+    signaling,
+    sessionId,
+    roomId,
+  });
+  // console.log(localVideoRef.current?.srcObject, localStreamRef, remoteStreamRef);
   //client가 /contract/id 로 처음 첩근 시 clientToken 생성 (게스트 로그인)
   //연결 완료
   useEffect(() => {
-    console.log('useEffect🤢');
     if (role === 'guest' && !sessionStorage.getItem('clientToken'))
       navigation(`/connecting/${roomId}/${clientId}`);
     if (localVideoRef.current && remoteVideoRef.current) {
@@ -73,28 +77,25 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
       //pageNum이 0으로 오면 본인인증완료된거임
       if (newMSG.pageNum === 0) {
         setIsDoneIdent(true);
+        console.log(localVideoRef.current);
       }
     });
   };
-  useEffect(() => {
-    console.log(localVideoRef.current, remoteVideoRef.current);
-  }, [localVideoRef, remoteVideoRef]);
 
-  // const renderPage = () => {
-  //   return isDoneIdent ? (
-  //     <Contract localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
-  //   ) : (
-  //     <Identification
-  //       localVideoRef={localVideoRef}
-  //       remoteVideoRef={remoteVideoRef}
-  //       stompClient={stompClient}
-  //     />
-  //   );
-  // };
+  useEffect(() => {
+    console.log(localVideoRef.current);
+  }, [localVideoRef.current]);
+
   return (
     <>
       {isDoneIdent ? (
-        <Contract localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
+        <Contract
+          localVideoRef={localVideoRef}
+          remoteVideoRef={remoteVideoRef}
+          // startVideo={startVideo}
+          // signaling={signaling}
+          // sessionId={sessionId}
+        />
       ) : (
         <Identification
           localVideoRef={localVideoRef}

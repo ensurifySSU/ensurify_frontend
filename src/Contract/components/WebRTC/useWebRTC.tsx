@@ -21,19 +21,20 @@ const configuration = {
 const useWebRTC = ({
   signaling,
   sessionId,
-  localVideoRef,
-  remoteVideoRef,
+  // localVideoRef,
+  // remoteVideoRef,
   roomId,
 }: {
   signaling: WebSocket;
   sessionId: String;
-  localVideoRef: React.RefObject<HTMLVideoElement>;
-  remoteVideoRef: React.RefObject<HTMLVideoElement>;
+  // localVideoRef: React.RefObject<HTMLVideoElement>;
+  // remoteVideoRef: React.RefObject<HTMLVideoElement>;
   roomId: string | undefined;
 }) => {
-  // const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const localStreamRef = useRef<MediaStream>();
+  const remoteStreamRef = useRef<MediaStream>();
   //peerConnection
   const peerConnectionRef = useRef<RTCPeerConnection>(new RTCPeerConnection(configuration));
 
@@ -59,6 +60,7 @@ const useWebRTC = ({
       }
       if (message.type === 'candidate') {
         await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(message.candidate));
+        console.log('addcandidate');
       }
       if (message.type === 'leave') {
         alert('상대가 방을 나갔습니다.');
@@ -97,6 +99,7 @@ const useWebRTC = ({
   ) => {
     console.log('answer보내기');
     await createPeerConnection(_sender, _receiver);
+    console.log('anser createPC');
     try {
       // const offer = await peerConnectionRef.current.createOffer();
       await peerConnectionRef.current.setRemoteDescription(_offer);
@@ -166,12 +169,10 @@ const useWebRTC = ({
         );
       }
     };
-    peerConnectionRef.current.oniceconnectionstatechange = (e) => {
-      console.log(e);
-    };
     peerConnectionRef.current.ontrack = (event) => {
       console.log(event);
       if (event.streams[0] && remoteVideoRef.current) {
+        remoteStreamRef.current = event.streams[0];
         if (remoteVideoRef.current.srcObject !== event.streams[0]) {
           remoteVideoRef.current.srcObject = event.streams[0];
           console.log('romete video 정보 받아와 저장', event.streams[0].getVideoTracks());
@@ -181,6 +182,7 @@ const useWebRTC = ({
 
     if (localStreamRef.current) {
       console.log('localstream add');
+
       localStreamRef.current.getTracks().forEach((track) => {
         if (!localStreamRef.current) return;
         peerConnectionRef.current.addTrack(track, localStreamRef.current);
@@ -195,6 +197,8 @@ const useWebRTC = ({
   return {
     localVideoRef,
     remoteVideoRef,
+    localStreamRef,
+    remoteStreamRef,
     startVideo,
   };
 };
