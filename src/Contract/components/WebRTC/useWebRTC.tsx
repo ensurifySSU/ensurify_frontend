@@ -18,9 +18,21 @@ const configuration = {
   ],
 };
 
-const useWebRTC = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: String }) => {
-  const localVideoRef = useRef<HTMLVideoElement | null>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+const useWebRTC = ({
+  signaling,
+  sessionId,
+  localVideoRef,
+  remoteVideoRef,
+  roomId,
+}: {
+  signaling: WebSocket;
+  sessionId: String;
+  localVideoRef: React.RefObject<HTMLVideoElement>;
+  remoteVideoRef: React.RefObject<HTMLVideoElement>;
+  roomId: string | undefined;
+}) => {
+  // const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
   const localStreamRef = useRef<MediaStream>();
   //peerConnection
   const peerConnectionRef = useRef<RTCPeerConnection>(new RTCPeerConnection(configuration));
@@ -47,11 +59,10 @@ const useWebRTC = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: 
       }
       if (message.type === 'candidate') {
         await peerConnectionRef.current.addIceCandidate(new RTCIceCandidate(message.candidate));
-        console.log('addcandidate');
       }
       if (message.type === 'leave') {
         alert('상대가 방을 나갔습니다.');
-        remoteVideoRef.current = null;
+        // remoteVideoRef.current = null;
       }
     };
   }, [signaling]);
@@ -66,7 +77,7 @@ const useWebRTC = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: 
       signaling.send(
         JSON.stringify({
           type: 'offer',
-          roomId: 8,
+          roomId: Number(roomId),
           sender: _sender, // sessionId
           receiver: _reciever, // sessionId
           offer: offer,
@@ -97,7 +108,7 @@ const useWebRTC = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: 
       signaling.send(
         JSON.stringify({
           type: 'answer',
-          roomId: 8,
+          roomId: Number(roomId),
           sender: _receiver, // sessionId
           receiver: _sender, // sessionId
           offer: answer,
@@ -127,7 +138,7 @@ const useWebRTC = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: 
         signaling.send(
           JSON.stringify({
             type: 'join_room',
-            roomId: 8,
+            roomId: Number(roomId),
             sender: sessionId,
           }),
         );
@@ -147,7 +158,7 @@ const useWebRTC = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: 
         signaling.send(
           JSON.stringify({
             type: 'candidate',
-            roomId: 8,
+            roomId: Number(roomId),
             sender: _sender,
             receiver: _receiver,
             candidate: event.candidate,

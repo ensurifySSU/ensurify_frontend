@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
 import { LeftPrimarySection, RightSideSheet } from '../../../Common/styles/commonStyles';
-import { forwardRef } from 'react';
 import { useRoleStore } from '../../../Common/stores/roleStore';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { getClientDetailInfo } from '../../../Common/apis/servies';
 import { ClientInfoCard } from '../../../Common/components/InfoCard';
 import Button from '../../../Common/components/Button';
+import { Client } from '@stomp/stompjs';
+import { sendPageWS } from '../../servies/contractWebsocket';
+import { forwardRef } from 'react';
 
 const 고객정보 = ({ clientId }: { clientId: string | undefined }) => {
   if (!clientId) return;
@@ -19,24 +21,24 @@ const 고객정보 = ({ clientId }: { clientId: string | undefined }) => {
   return data && <ClientInfoCard data={data.result} />;
 };
 
-const Identification = forwardRef(
-  (
-    {
-      localVideoRef,
-      remoteVideoRef,
-    }: {
-      localVideoRef: React.RefObject<HTMLVideoElement>;
-      remoteVideoRef: React.RefObject<HTMLVideoElement>;
-    },
-    ref: React.Ref<HTMLDivElement>,
-  ) => {
-    const { role } = useRoleStore();
-    const { clientId } = useParams();
+interface Props {
+  localVideoRef: React.RefObject<HTMLVideoElement> | null;
+  remoteVideoRef: React.RefObject<HTMLVideoElement> | null;
+  stompClient: Client | null;
+}
 
-    const handleClick = () => {
-      //웹소켓 연결
-      //본인인증완료 state 변경
-      //navigate
+const Identification = forwardRef<HTMLDivElement, Props>(
+  ({ localVideoRef, remoteVideoRef, stompClient }: Props, ref) => {
+    const { role } = useRoleStore();
+    const { roomId, clientId } = useParams();
+
+    const handleClick = async () => {
+      if (!roomId) return;
+      const data = {
+        roomId: roomId,
+        pageNum: 0,
+      };
+      await sendPageWS({ stompClient, data });
     };
 
     return (

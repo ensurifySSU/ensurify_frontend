@@ -1,7 +1,11 @@
+import { useRef } from 'react';
 import useWebRTC from './useWebRTC';
 
 const Test2 = ({ signaling, sessionId }: { signaling: WebSocket; sessionId: String }) => {
-  const { localVideoRef, remoteVideoRef, startVideo } = useWebRTC({ signaling, sessionId });
+  const roomId = '8';
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const { startVideo } = useWebRTC({ signaling, sessionId, localVideoRef, remoteVideoRef, roomId });
   return (
     <div>
       <video
