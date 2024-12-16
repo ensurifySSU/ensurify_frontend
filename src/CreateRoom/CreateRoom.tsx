@@ -80,7 +80,7 @@ const CreateRoom = () => {
   const onCreateRoom = useMutation({
     mutationFn: createRoom,
     onSuccess: (data) => {
-      navigation(`/contract/${data.result.roomId}`);
+      navigation(`/contract/${data.result.roomId}/${selectedClient?.clientId}`);
     },
     onError: (error) => {
       console.log('에러 발생! 아래 메시지를 확인해주세요.', error);

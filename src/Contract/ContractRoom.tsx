@@ -6,13 +6,14 @@ import { useRoleStore } from '../Common/stores/roleStore';
 
 const ContractRoom = () => {
   const navigation = useNavigate();
-  const { roomId } = useParams();
+  const { roomId, clientId } = useParams();
   const { role } = useRoleStore();
   //client가 /contract/id 로 처음 첩근 시 clientToken 생성 (게스트 로그인)
   //연결 완료
   useEffect(() => {
+    console.log(role);
     if (role === 'guest' && !sessionStorage.getItem('clientToken'))
-      navigation(`/connecting/${roomId}`);
+      navigation(`/connecting/${roomId}/${clientId}`);
   }, []);
 
   const [isDoneIdent] = useState<boolean>(false);

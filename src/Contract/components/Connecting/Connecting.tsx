@@ -11,7 +11,7 @@ import { enterRoom } from '../../servies/enterRoom';
 
 const Connecting = () => {
   const navigation = useNavigate();
-  const { roomId } = useParams();
+  const { roomId, clientId } = useParams();
 
   const onGusetSignup = useMutation({
     mutationFn: guestSignup,
@@ -36,7 +36,7 @@ const Connecting = () => {
   const onEnterRoom = useMutation({
     mutationFn: enterRoom,
     onSuccess: () => {
-      navigation(`/contract/${roomId}`);
+      navigation(`/contract/${roomId}/${clientId}`);
     },
     onError: (error) => {
       console.log('에러 발생! 아래 메시지를 확인해주세요.', error);
@@ -45,12 +45,12 @@ const Connecting = () => {
 
   const handleClick = async () => {
     if (!roomId) return;
-    onEnterRoom.mutate(roomId);
+    onEnterRoom.mutate(roomId, clientId);
   };
 
   useEffect(() => {
     //상담원이라면 /contract로 이동
-    if (sessionStorage.getItem('token')) navigation(`/contract/${roomId}`);
+    if (sessionStorage.getItem('token')) navigation(`/contract/${roomId}/${clientId}`);
     onGusetSignup.mutate();
   }, []);
   return (
