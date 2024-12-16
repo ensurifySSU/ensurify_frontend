@@ -45,13 +45,14 @@ const Connecting = () => {
 
   const handleClick = async () => {
     if (!roomId) return;
-    onEnterRoom.mutate(roomId, clientId);
+    onEnterRoom.mutate(roomId);
   };
 
   useEffect(() => {
     //상담원이라면 /contract로 이동
+    if (!clientId) return;
     if (sessionStorage.getItem('token')) navigation(`/contract/${roomId}/${clientId}`);
-    onGusetSignup.mutate();
+    onGusetSignup.mutate(clientId);
   }, []);
   return (
     <Stcontainer>
