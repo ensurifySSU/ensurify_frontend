@@ -33,15 +33,15 @@ const router = createBrowserRouter([
         path: '/contract/:roomId',
         element: <ContractRoom />,
       },
+      {
+        path: '/webRTC',
+        element: <WebRtc />,
+      },
     ],
   },
   {
     path: '/login',
     element: <Login />,
-  },
-  {
-    path: '/webRTC',
-    element: <WebRtc />,
   },
 ]);
 
