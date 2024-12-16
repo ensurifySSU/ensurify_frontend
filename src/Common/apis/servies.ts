@@ -15,7 +15,7 @@ export const getContractDocsList = async () => {
   return data;
 };
 
-export const getClientDetailInfo = async (clientId: number | undefined) => {
+export const getClientDetailInfo = async (clientId: number | string | undefined) => {
   if (!clientId) return;
   const { data } = await instance.get(`/clients/${clientId}`);
   return data;
