@@ -1,8 +1,16 @@
 import styled from '@emotion/styled';
 
-const SearchItem = ({ title, tag }: { title: string; tag: string }) => {
+const SearchItem = ({
+  title,
+  tag,
+  onClick,
+}: {
+  title: string;
+  tag: string;
+  onClick: () => void;
+}) => {
   return (
-    <StContainer>
+    <StContainer onClick={onClick}>
       <StTitle>{title}</StTitle>
       <StTag>{tag}</StTag>
     </StContainer>
@@ -15,7 +23,7 @@ const StContainer = styled.div`
   cursor: pointer;
 
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   align-items: end;
 
   width: 100%;
@@ -34,7 +42,7 @@ const StContainer = styled.div`
 const StTitle = styled.p`
   overflow: hidden;
 
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
   color: #000;
   text-overflow: ellipsis;
@@ -42,7 +50,7 @@ const StTitle = styled.p`
 `;
 
 const StTag = styled.p`
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   font-weight: 400;
   color: ${({ theme }) => theme.colors.blue};
   white-space: nowrap;

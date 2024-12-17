@@ -2,9 +2,27 @@ import styled from '@emotion/styled';
 import { LogoBig } from '../Common/assets/0_index';
 import Button from '../Common/components/Button';
 import HomeCard from './components/HomeCard';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '../Common/apis/servies';
+import { Suspense, useEffect } from 'react';
+import { useUserInfo } from '../Common/stores/userInfoStore';
 
 const Home = () => {
-  return (
+  const navigation = useNavigate();
+  const { username, setUsername } = useUserInfo();
+
+  const { data } = useQuery({
+    queryKey: ['users'],
+    queryFn: getUserInfo,
+  });
+
+  useEffect(() => {
+    if (!data) return;
+    if (username !== data?.result?.name) setUsername(data?.result?.name);
+  }, [data]);
+
+  http: return (
     <Stcontainer>
       <StWrapper>
         <StIntroSection>
@@ -12,10 +30,11 @@ const Home = () => {
             <h1>계약의 확실성과 단순함을 한번에</h1>
             <LogoBig />
           </StIntro>
-
-          <Button content="새 계약 생성하기" />
+          <Button content="새 계약 생성하기" handleClick={() => navigation('/createRoom')} />
         </StIntroSection>
-        <HomeCard />
+        <Suspense fallback={<div>로딩중</div>}>
+          <HomeCard name={data?.result?.name} />
+        </Suspense>
       </StWrapper>
     </Stcontainer>
   );
@@ -36,6 +55,7 @@ const StWrapper = styled.div`
   justify-content: center;
 
   height: 100%;
+  padding: 5rem;
 
   background-color: white;
   border-radius: 35px 35px 0 0;
