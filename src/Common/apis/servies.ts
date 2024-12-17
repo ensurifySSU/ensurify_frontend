@@ -29,7 +29,7 @@ export const getFileDownload = async (fileName: string | undefined) => {
 }
 
 export const postAI = async (question: string) => {
-  const { data } = await client.post(`/openai/chat`, {question: question});
+  const { data } = await instance.post(`/openai/chat`, {question: question});
   return data;
 }
 

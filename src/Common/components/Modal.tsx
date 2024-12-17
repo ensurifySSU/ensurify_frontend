@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
+  AnswerText,
   ChatInput,
   ChatInputWrapper,
   CloseButton,
   Container,
   FloatingAIButton,
   InfoButton,
+  InfoListContainer,
   ModalContent,
   ModalFooter,
   ModalOverlay,
@@ -22,11 +24,16 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
   const [input, setInput] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [status, setStatus] = useState(false);
+  const [infoList, setInfoList] = useState<string[]>(['irp란?', '감자야']);
 
   const onAIMessage = useMutation({
     mutationFn: postAI,
     onSuccess: (data) => {
       console.log(data);
+      setAnswer(data.result.answer);
+      setStatus(data.isSuccess);
     },
     onError: (error) => {
       console.log('에러 발생! 아래 메시지를 확인해주세요.', error);
@@ -34,19 +41,18 @@ const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
   });
 
   const handleAI = async () => {
-    if (!input) {
-      alert('메시지를 입력해주세요.');
-      return;
-    }
+    // if (!input) {
+    //   alert('메시지를 입력해주세요.');
+    //   return;
+    // }
     onAIMessage.mutate(input);
     setInput('');
-  }
+  };
 
-  // ESC 키 이벤트 처리
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'enter') handleAI();
+      if (e.key === 'Enter') handleAI(); // Enter 키 감지
     };
 
     if (isActive) {
@@ -56,21 +62,26 @@ const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isActive, onClose]);
 
-  if (!isActive) return null;
-  
+  useEffect(() => {
+    console.log(input);
+  }, [input]);
+
   return (
     <ModalOverlay onClick={onClose}>
       <Container onClick={(e) => e.stopPropagation()}>
-        <InfoButton onClick={() => alert('irp란?')}>irp란?</InfoButton>
+        <InfoListContainer>
+          {infoList && infoList.map((item) => <InfoButton>{item}</InfoButton>)}
+        </InfoListContainer>
         <ChatInput
           placeholder="메시지를 입력하세요..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <FloatingAIButton>
-          <AIButton onClick={onClose} isActive={isActive} />
-        </FloatingAIButton>
+        {answer && <AnswerText>{answer}</AnswerText>}
       </Container>
+      <FloatingAIButton>
+        <AIButton onClick={onClose} isActive={isActive} />
+      </FloatingAIButton>
     </ModalOverlay>
   );
 };

@@ -154,7 +154,7 @@ export const LineEEE = styled.div`
 
 export const BlueBtn = styled.button`
   width: 100px;
-  height: 70px;
+  height: 50px;
   background-color: #2563eb;
   color: #ffffff;
   border: none;
@@ -241,20 +241,18 @@ export const ModalFooter = styled.div`
 export const Container = styled.div`
   position: relative;
   width: 300px;
-  height: 300px;
+  height: 400px;
   background-color: #fff8e6; /* 부드러운 배경색 */
   border-radius: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 16px;
+  flex-direction: column;
 `;
 
 export const InfoButton = styled.button`
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
   background-color: white;
   color: black;
   font-weight: bold;
@@ -273,4 +271,30 @@ export const FloatingAIButton = styled.div`
   position: absolute;
   bottom: 16px;
   right: 16px;
+`;
+
+export const AnswerText = styled.p`
+  background-color: #f9f9f9; /* 부드러운 배경색 */
+  border: 1px solid #e0e0e0; /* 테두리 추가 */
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  max-height: 150px; /* 긴 답변에 대한 스크롤 처리 */
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+export const InfoListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 10;
+  max-height: 150px;
+  overflow-y: auto; /* 버튼 수가 많으면 스크롤 */
 `;
