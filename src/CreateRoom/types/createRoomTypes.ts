@@ -14,3 +14,10 @@ export interface IcreateRoomValue {
   contractDocumentId: number;
   clientId: number;
 }
+
+export interface IClientInfoType {
+  name: string;
+  age: number;
+  gender: string;
+  email: string;
+}
