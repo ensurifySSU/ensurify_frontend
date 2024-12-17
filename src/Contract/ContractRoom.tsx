@@ -21,6 +21,7 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
   const [stompClient, setStompClient] = useState<Client | null>(null);
   // const { isDoneIdent, setIsDoneIdent } = useIdentStore();
   const [isDoneIdent, setIsDoneIdent] = useState(sessionStorage.getItem('identification'));
+  const [message, setMessage] = useState<any>({});
 
   // useRef로 videoRef 선언
   // const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -72,6 +73,7 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
   const setupSubscription = (_stompClient: Client) => {
     _stompClient.subscribe(`/sub/rooms/${roomId}`, (message) => {
       const newMSG = JSON.parse(message.body);
+      console.log(newMSG);
 
       //pageNum이 0으로 오면 본인인증완료된거임
       if (newMSG.pageNum === 0) {
@@ -79,6 +81,8 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
         sessionStorage.setItem('identification', 'Done');
 
         window.location.reload();
+      } else {
+        setMessage(newMSG);
       }
     });
   };
@@ -90,7 +94,7 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
   return (
     <>
       {isDoneIdent ? (
-        <Contract localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
+        <Contract localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} stompClient={stompClient} msgItem={message} />
       ) : (
         <Identification
           localVideoRef={localVideoRef}
