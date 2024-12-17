@@ -51,7 +51,8 @@ const Connecting = () => {
   useEffect(() => {
     //상담원이라면 /contract로 이동
     if (!clientId) return;
-    if (sessionStorage.getItem('token')) navigation(`/contract/${roomId}/${clientId}`);
+    if (sessionStorage.getItem('token') || sessionStorage.getItem('clientToken'))
+      navigation(`/contract/${roomId}/${clientId}`);
     onGusetSignup.mutate(clientId);
   }, []);
   return (
