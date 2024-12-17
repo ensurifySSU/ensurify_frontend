@@ -1,8 +1,8 @@
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef } from 'react';
 import { LeftPrimarySection, RightSideSheet } from '../../../Common/styles/commonStyles';
-import useWebRTC from '../WebRTC/useWebRTC';
-import { useParams } from 'react-router-dom';
+
 import SideSheetVideo from './SideSheetVideo';
+import styled from '@emotion/styled';
 
 interface Props {
   localVideoRef: React.RefObject<HTMLVideoElement>;
@@ -12,32 +12,34 @@ interface Props {
 const Contract = forwardRef<HTMLDivElement, Props>(
   ({ localVideoRef, remoteVideoRef }: Props, ref) => {
     console.log(localVideoRef.current);
-    // useEffect(() => {
-    //   console.log(localVideoRef.current, localVideoRef.current.srcObject);
-    // }, [localVideoRef.current]);
-    // const { roomId } = useParams();
-    // const localVideoRef = useRef<HTMLVideoElement | null>(null);
-    // const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
-    // const { startVideo, localVideoRef, remoteVideoRef } = useWebRTC({
-    //   // signaling,
-    //   // sessionId,
-    //   localVideoRef,
-    //   remoteVideoRef,
-    //   roomId,
-    // });
-
-    // useEffect(() => {
-    //   startVideo();
-    // }, []);
 
     return (
-      <div ref={ref}>
-        <LeftPrimarySection></LeftPrimarySection>
+      <StContainer ref={ref}>
+        <LeftPrimarySection>
+          <StWrapper>{/* 계약서 부분 */}</StWrapper>
+        </LeftPrimarySection>
         <RightSideSheet>
           <SideSheetVideo localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
+          {/* 버튼, ai프롬프트, 모달 부분 */}
         </RightSideSheet>
-      </div>
+      </StContainer>
     );
   },
 );
 export default Contract;
+
+const StContainer = styled.div`
+  height: 100%;
+`;
+
+const StWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: #fff;
+  border-radius: 10px;
+`;

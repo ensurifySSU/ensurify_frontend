@@ -1,12 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import Contract from './components/Contract/Contract';
 import Identification from './components/Identification/Identification';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRoleStore } from '../Common/stores/roleStore';
 import useWebRTCSocket from './components/WebRTC/useWebRTCSocket';
 import useWebRTC from './components/WebRTC/useWebRTC';
 import { Client } from '@stomp/stompjs';
-import { sendPageWS } from './servies/contractWebsocket';
 
 export const Tmp = () => {
   const { signaling, sessionId } = useWebRTCSocket();
@@ -21,7 +20,7 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
   const { role } = useRoleStore();
   const [stompClient, setStompClient] = useState<Client | null>(null);
   // const { isDoneIdent, setIsDoneIdent } = useIdentStore();
-  const [isDoneIdent, setIsDoneIdent] = useState(false);
+  const [isDoneIdent, setIsDoneIdent] = useState(sessionStorage.getItem('identification'));
 
   // useRef로 videoRef 선언
   // const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -76,8 +75,10 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
 
       //pageNum이 0으로 오면 본인인증완료된거임
       if (newMSG.pageNum === 0) {
-        setIsDoneIdent(true);
-        console.log(localVideoRef.current);
+        setIsDoneIdent('Done');
+        sessionStorage.setItem('identification', 'Done');
+
+        window.location.reload();
       }
     });
   };
@@ -89,13 +90,7 @@ const ContractRoom = ({ signaling, sessionId }: { signaling: WebSocket; sessionI
   return (
     <>
       {isDoneIdent ? (
-        <Contract
-          localVideoRef={localVideoRef}
-          remoteVideoRef={remoteVideoRef}
-          // startVideo={startVideo}
-          // signaling={signaling}
-          // sessionId={sessionId}
-        />
+        <Contract localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
       ) : (
         <Identification
           localVideoRef={localVideoRef}

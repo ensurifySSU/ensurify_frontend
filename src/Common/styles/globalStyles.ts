@@ -44,6 +44,11 @@ const globalStyles = css`
     background-color: transparent;
     border: none;
   }
+
+  video {
+    transform: scaleX(-1);
+    object-fit: cover;
+  }
 `;
 
 export default globalStyles;

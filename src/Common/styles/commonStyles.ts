@@ -13,7 +13,7 @@ export const RightSideSheet = styled.aside`
 
   width: ${RightSideSheetWidth}rem;
   height: calc(100vh - 6rem);
-  padding: 5rem;
+  padding: 2rem;
 
   background-color: white;
 `;
