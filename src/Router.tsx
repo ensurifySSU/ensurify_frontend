@@ -4,9 +4,10 @@ import Home from './Home/Home';
 import MainLayout from './Common/components/Layout/MainLayout';
 import Dashboard from './Dashboard/Dashboard';
 import CreateRoom from './CreateRoom/CreateRoom';
-import ContractRoom from './Contract/ContractRoom';
+import { Tmp } from './Contract/ContractRoom';
 import Connecting from './Contract/components/Connecting/Connecting';
 import PDF from './Common/components/PDF';
+import WebRtc from './Contract/components/WebRTC/WebRtc';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/contract/:roomId/:clientId',
-        element: <ContractRoom />,
+        element: <Tmp />,
+      },
+      {
+        path: '/webRTC',
+        element: <WebRtc />,
       },
     ],
   },

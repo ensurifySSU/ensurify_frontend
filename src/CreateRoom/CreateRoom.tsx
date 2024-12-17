@@ -11,6 +11,7 @@ import { useRoomStore } from '../Common/stores/seletedContractStore';
 import { Suspense } from 'react';
 import { createRoom } from './services';
 import { useNavigate } from 'react-router-dom';
+import { BasicInfoCard, ClientInfoCard } from '../Common/components/InfoCard';
 
 const Input = ({ placeholder }: { placeholder: string }) => {
   return (
@@ -25,12 +26,7 @@ const 계약상품 = () => {
   const selectedContract = useRoomStore((state) => state.selectedContract);
   if (!selectedContract) return;
 
-  return (
-    <StSeletedContaienr>
-      <St계약상품.title>{selectedContract?.name}</St계약상품.title>
-      <St계약상품.tag>{selectedContract?.category}</St계약상품.tag>
-    </StSeletedContaienr>
-  );
+  return BasicInfoCard(selectedContract.name, selectedContract.category);
 };
 
 const 고객정보 = () => {
@@ -44,19 +40,7 @@ const 고객정보 = () => {
 
   if (!selectedClient) return;
 
-  return (
-    <StSeletedContaienr>
-      <St고객정보.wrapper>
-        <St고객정보.name>{data?.result?.name}</St고객정보.name>
-        <St고객정보.userInfo>
-          {data?.result?.gender} | {data?.result?.age}
-        </St고객정보.userInfo>
-        <br />
-        <St고객정보.label>링크 전송 이메일</St고객정보.label>
-        <St고객정보.email>{data?.result?.email}</St고객정보.email>
-      </St고객정보.wrapper>
-    </StSeletedContaienr>
-  );
+  return data && <ClientInfoCard data={data.result} />;
 };
 
 const CreateRoom = () => {
@@ -242,62 +226,5 @@ const StInput = {
     background-color: transparent;
     border: none;
     outline: none;
-  `,
-};
-
-const StSeletedContaienr = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: end;
-
-  width: 100%;
-  height: fit-content;
-  padding: 2rem;
-
-  font-size: 1.3rem;
-
-  background-color: rgb(255 215 85 / 20%);
-  border-radius: 10px;
-`;
-
-const St계약상품 = {
-  title: styled.p`
-    overflow: hidden;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #000;
-  `,
-  tag: styled.p`
-    font-size: 1.2rem;
-    font-weight: 400;
-    color: ${({ theme }) => theme.colors.blue};
-    white-space: nowrap;
-  `,
-};
-
-const St고객정보 = {
-  wrapper: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  `,
-  name: styled.p`
-    overflow: hidden;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #000;
-  `,
-  userInfo: styled.p`
-    font-size: 1.4rem;
-  `,
-  label: styled.p`
-    font-size: 1.3rem;
-    color: #5c5c5c;
-  `,
-  email: styled.p`
-    font-size: 1.6rem;
-    font-weight: 500;
-    color: #000;
-    white-space: nowrap;
   `,
 };
