@@ -1,29 +1,21 @@
-import { useState } from 'react';
 import { CloseButton, ModalContent, ModalOverlay, TextButton } from '../common';
-import AIButton from './AIButton';
 
-interface ModalProps {}
+interface ModalProps {
+  isActive: boolean;
+  onClose: () => void;
+}
 
-const Modal: React.FC<ModalProps> = () => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-
-  const handleClick = () => {
-    setIsActive((prev) => !prev);
-  };
+const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
+  if (!isActive) return null;
 
   return (
-    <>
-      <AIButton onClick={handleClick} isActive={isActive} />
-      {isActive && (
-        <ModalOverlay onClick={() => setIsActive(false)}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <p>This is a modal content!</p>
-            <CloseButton onClick={() => setIsActive(false)}>Close</CloseButton>
-          </ModalContent>
-          <TextButton onClick={handleClick}>irp란?</TextButton>
-        </ModalOverlay>
-      )}
-    </>
+    <ModalOverlay onClick={onClose}>
+      <ModalContent onClick={(e) => e.stopPropagation()}>
+        <p>This is a modal content!</p>
+        <CloseButton onClick={onClose}>Close</CloseButton>
+        <TextButton onClick={onClose}>irp란?</TextButton>
+      </ModalContent>
+    </ModalOverlay>
   );
 };
 
