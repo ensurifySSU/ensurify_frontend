@@ -31,6 +31,7 @@ import { check } from '../../../../node_modules/prettier/standalone.d';
 import Button from '../../../Common/components/Button';
 import useRole from '../../../Common/hooks/useRole';
 import { useRoleStore } from '../../../Common/stores/roleStore';
+import { IcContractDone } from '../../assets/0_index';
 
 interface Props {
   localVideoRef: React.RefObject<HTMLVideoElement>;
@@ -293,13 +294,29 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       <StContainer ref={ref}>
         <LeftPrimarySection>
           <StWrapper>
-            <PDFViewer style={{ width: '100%', height: '100%', marginTop: '20px' }}>
-              <PDFDocument
-                documentData={documentItem}
-                signatureDataURLs={signatureDataURLs}
-                currentPage={currentPage}
-              />
-            </PDFViewer>
+            {currentPage < totalPages ? (
+              <PDFViewer style={{ width: '100%', height: '100%', marginTop: '20px' }}>
+                <PDFDocument
+                  documentData={documentItem}
+                  signatureDataURLs={signatureDataURLs}
+                  currentPage={currentPage}
+                />
+              </PDFViewer>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '2rem',
+                }}
+              >
+                <IcContractDone style={{ width: '10rem' }} />
+                <p style={{ fontSize: '1.5rem', fontWeight: '500' }}>계약이 완료되었어요!</p>
+                <BlueBtn onClick={handleClickDownload}>계약서 pdf 다운로드</BlueBtn>
+              </div>
+            )}
+
             {signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
             {userType != 'client' && signatureDataURLs.length < sectionDrawingList.length && (
               <ModalOverlay />
@@ -331,52 +348,57 @@ const Contract = forwardRef<HTMLDivElement, Props>(
             <BlueBtn onClick={handleClickDownload} style={{ marginLeft: '10px' }}>
               파일 업로드
             </BlueBtn> */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: '1rem',
-              }}
-            >
-              <Button
-                handleClick={() => handlePageDown(currentPage - 1)}
-                isActive={currentPage !== 1}
-                content="이전"
-                width="10rem"
-              />
-              {/* <span style={{ margin: '0 10px' }}>
+            {currentPage < totalPages ? (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '1rem',
+                }}
+              >
+                <Button
+                  handleClick={() => handlePageDown(currentPage - 1)}
+                  isActive={currentPage !== 1}
+                  content="이전"
+                  width="10rem"
+                />
+                {/* <span style={{ margin: '0 10px' }}>
                 Page {currentPage} of {totalPages}
               </span> */}
-              <Button
-                handleClick={() => {
-                  handlePageUp(currentPage + 1);
-                }}
-                isActive={currentPage !== totalPages}
-                content="다음"
-                width="10rem"
-              />
-            </div>
-            {role === 'client' ? (
-              <>
-                {sectionDrawingList.map(
-                  (item, index) =>
-                    currentItem === index && (
-                      <div key={index} style={{ marginTop: '20px' }}>
-                        <Text>서명을 해주세요:</Text>
-                        <canvas
-                          ref={(el) => (signatureCanvasRefs.current[index] = el)}
-                          style={{
-                            width: '100%',
-                            height: 'fit-content',
-                            border: '1px solid #ccc',
-                            marginTop: '10px',
-                          }}
-                          onMouseDown={(e) => startDrawing(e, index)}
-                          onMouseMove={(e) => draw(e, index)}
-                          onMouseUp={endDrawing}
-                          onMouseLeave={endDrawing}
-                        ></canvas>
+                <Button
+                  handleClick={() => {
+                    handlePageUp(currentPage + 1);
+                  }}
+                  isActive={currentPage !== totalPages}
+                  content="다음"
+                  width="10rem"
+                />
+              </div>
+            ) : (
+              <Button content="종료하기" width="20rem"></Button>
+            )}
+
+            <>
+              {sectionDrawingList.map(
+                (item, index) =>
+                  currentItem === index && (
+                    <div key={index} style={{ marginTop: '20px' }}>
+                      {role === 'client' && <Text>서명을 해주세요:</Text>}
+                      <canvas
+                        ref={(el) => (signatureCanvasRefs.current[index] = el)}
+                        style={{
+                          width: '100%',
+                          height: 'fit-content',
+                          border: '1px solid #ccc',
+                          marginTop: '10px',
+                        }}
+                        onMouseDown={(e) => startDrawing(e, index)}
+                        onMouseMove={(e) => draw(e, index)}
+                        onMouseUp={endDrawing}
+                        onMouseLeave={endDrawing}
+                      ></canvas>
+                      {role === 'client' ? (
                         <div
                           style={{
                             display: 'flex',
@@ -393,13 +415,18 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                           />
                           <Button handleClick={() => handleSaveSignature(index)} content="저장" />
                         </div>
-                      </div>
-                    ),
-                )}
-              </>
-            ) : (
-              <></>
-            )}
+                      ) : (
+                        <button
+                          style={{ fontSize: '1.5rem', fontWeight: '500', marginTop: '2rem' }}
+                          onClick={() => handleSaveSignature(index)}
+                        >
+                          고객이 서명중입니다...
+                        </button>
+                      )}
+                    </div>
+                  ),
+              )}
+            </>
           </FlexContainer>
         </RightSideSheet>
         {isModalActive ? (

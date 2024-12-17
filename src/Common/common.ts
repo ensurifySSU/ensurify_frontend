@@ -160,7 +160,7 @@ export const LineEEE = styled.div`
 `;
 
 export const BlueBtn = styled.button`
-  padding: 1rem 2rem;
+  padding: 1rem 5rem;
 
   color: #fff;
 

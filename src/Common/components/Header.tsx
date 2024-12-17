@@ -30,6 +30,7 @@ const Header = () => {
   return (
     <StContainer>
       <StLogo onClick={() => navigation('/home')} />
+      <StTitle>개인형퇴직연금(IRP) 운용관리계약서</StTitle>
       <>{renderMenu()}</>
     </StContainer>
   );
@@ -54,7 +55,10 @@ const StContainer = styled.header`
 
   background-color: white;
 `;
-
+const StTitle = styled.p`
+  font-size: 1.8rem;
+  font-weight: 600;
+`;
 const StLogo = styled(Logo)`
   cursor: pointer;
   width: 10rem;
