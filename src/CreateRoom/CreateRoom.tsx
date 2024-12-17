@@ -228,18 +228,3 @@ const StInput = {
     outline: none;
   `,
 };
-
-const StSeletedContaienr = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: end;
-
-  width: 100%;
-  height: fit-content;
-  padding: 2rem;
-
-  font-size: 1.3rem;
-
-  background-color: rgb(255 215 85 / 20%);
-  border-radius: 10px;
-`;

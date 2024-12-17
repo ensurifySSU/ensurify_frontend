@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import useWebRTC from './useWebRTC';
 import { useNavigate } from 'react-router-dom';
 
