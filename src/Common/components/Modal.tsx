@@ -20,13 +20,10 @@ import { postAI } from '../apis/servies';
 interface ModalProps {
   isActive: boolean;
   onClose: () => void;
+  userType: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
-  const [userType, setUserType] = useState<string>(
-    sessionStorage.getItem('token') ? 'user' : 'client',
-  );
-
+const Modal: React.FC<ModalProps> = ({ isActive, onClose, userType }) => {
   const [input, setInput] = useState('');
   const [answer, setAnswer] = useState('');
   const [status, setStatus] = useState(false);

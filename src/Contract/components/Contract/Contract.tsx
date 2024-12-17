@@ -55,6 +55,10 @@ const Contract = forwardRef<HTMLDivElement, Props>(
     const [currentItem, setCurrentItem] = useState<number>(0);
     const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
 
+    const [userType, setUserType] = useState<string>(
+      sessionStorage.getItem('token') ? 'user' : 'client',
+    );
+
     const [isModalActive, setIsModalActive] = useState(false);
 
     const handleOpenModal = () => {
@@ -72,26 +76,22 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         } else if (msgItem?.signNum) {
           const canvas = signatureCanvasRefs.current[msgItem.signNum];
           if (canvas) {
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              const img = new Image();
-              img.src = msgItem.imgUrl;
-              img.onload = () => {
-                ctx.drawImage(img, 0, 0);
-              };
-            }
+            const dataURL = msgItem.imgUrl;
+            setSignatureDataURLs((prev) => {
+              const updated = [...prev];
+              updated[msgItem.signNum - 1] = dataURL;
+              return updated;
+            });
           }
         } else if (msgItem?.checkNum) {
           const canvas = signatureCanvasRefs.current[msgItem.checkNum];
           if (canvas) {
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              const img = new Image();
-              img.src = msgItem.imgUrl;
-              img.onload = () => {
-                ctx.drawImage(img, 0, 0);
-              };
-            }
+            const dataURL = msgItem.imgUrl;
+            setSignatureDataURLs((prev) => {
+              const updated = [...prev];
+              updated[msgItem.checkNum - 1] = dataURL;
+              return updated;
+            });
           }
         }
       }
@@ -126,6 +126,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         // checkNum: signNum,
         imgUrl: imgUrl,
       };
+      console.log(data);
       await sendSignWS({ stompClient, data });
     };
 
@@ -300,12 +301,15 @@ const Contract = forwardRef<HTMLDivElement, Props>(
               />
             </PDFViewer>
             {signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
+            {userType != 'client' && signatureDataURLs.length < sectionDrawingList.length && (
+              <ModalOverlay />
+            )}
           </StWrapper>
         </LeftPrimarySection>
         <RightSideSheet>
           <SideSheetVideo localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
           <FlexContainer padding="20px" marginBottom="100px">
-            {
+            {/* {
               <PDFDownloadLink
                 document={
                   <DownloadDocument
@@ -326,76 +330,80 @@ const Contract = forwardRef<HTMLDivElement, Props>(
             }
             <BlueBtn onClick={handleClickDownload} style={{ marginLeft: '10px' }}>
               파일 업로드
-            </BlueBtn>
-            {role === 'user' ? (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '1rem',
+            </BlueBtn> */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '1rem',
+              }}
+            >
+              <Button
+                handleClick={() => handlePageDown(currentPage - 1)}
+                isActive={currentPage !== 1}
+                content="이전"
+                width="10rem"
+              />
+              {/* <span style={{ margin: '0 10px' }}>
+                Page {currentPage} of {totalPages}
+              </span> */}
+              <Button
+                handleClick={() => {
+                  handlePageUp(currentPage + 1);
                 }}
-              >
-                <Button
-                  handleClick={() => handlePageDown(currentPage - 1)}
-                  isActive={currentPage !== 1}
-                  content="이전"
-                  width="10rem"
-                />
-                <span style={{ margin: '0 10px' }}>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                  handleClick={() => {
-                    handlePageUp(currentPage + 1);
-                  }}
-                  isActive={currentPage !== totalPages}
-                  content="다음"
-                  width="10rem"
-                />
-              </div>
+                isActive={currentPage !== totalPages}
+                content="다음"
+                width="10rem"
+              />
+            </div>
+            {role === 'client' ? (
+              <>
+                {sectionDrawingList.map(
+                  (item, index) =>
+                    currentItem === index && (
+                      <div key={index} style={{ marginTop: '20px' }}>
+                        <Text>서명을 해주세요:</Text>
+                        <canvas
+                          ref={(el) => (signatureCanvasRefs.current[index] = el)}
+                          style={{
+                            width: '100%',
+                            height: 'fit-content',
+                            border: '1px solid #ccc',
+                            marginTop: '10px',
+                          }}
+                          onMouseDown={(e) => startDrawing(e, index)}
+                          onMouseMove={(e) => draw(e, index)}
+                          onMouseUp={endDrawing}
+                          onMouseLeave={endDrawing}
+                        ></canvas>
+                        <div
+                          style={{
+                            display: 'flex',
+                            width: '100%',
+                            height: 'fit-content',
+                            justifyContent: 'center',
+                            marginTop: '10px',
+                            gap: '2rem',
+                          }}
+                        >
+                          <Button
+                            handleClick={() => handleClearSignature(index)}
+                            content="초기화"
+                          />
+                          <Button handleClick={() => handleSaveSignature(index)} content="저장" />
+                        </div>
+                      </div>
+                    ),
+                )}
+              </>
             ) : (
               <></>
-            )}
-
-            {sectionDrawingList.map(
-              (item, index) =>
-                currentItem === index && (
-                  <div key={index} style={{ marginTop: '20px' }}>
-                    <Text>서명을 해주세요:</Text>
-                    <canvas
-                      ref={(el) => (signatureCanvasRefs.current[index] = el)}
-                      style={{
-                        width: '100%',
-                        height: 'fit-content',
-                        border: '1px solid #ccc',
-                        marginTop: '10px',
-                      }}
-                      onMouseDown={(e) => startDrawing(e, index)}
-                      onMouseMove={(e) => draw(e, index)}
-                      onMouseUp={endDrawing}
-                      onMouseLeave={endDrawing}
-                    ></canvas>
-                    <div
-                      style={{
-                        display: 'flex',
-                        width: '100%',
-                        height: 'fit-content',
-                        justifyContent: 'center',
-                        marginTop: '10px',
-                        gap: '2rem',
-                      }}
-                    >
-                      <Button handleClick={() => handleClearSignature(index)} content="초기화" />
-                      <Button handleClick={() => handleSaveSignature(index)} content="저장" />
-                    </div>
-                  </div>
-                ),
             )}
           </FlexContainer>
         </RightSideSheet>
         {isModalActive ? (
-          <Modal isActive={isModalActive} onClose={handleCloseModal} />
+          <Modal isActive={isModalActive} onClose={handleCloseModal} userType={userType} />
         ) : (
           <FloatingAIButton>
             <AIButton onClick={handleOpenModal} isActive={isModalActive} />
