@@ -151,7 +151,7 @@ export const LineEEE = styled.div`
 `;
 
 export const BlueBtn = styled.button`
-  width: 200px;
+  width: 100px;
   height: 70px;
   background-color: #2563eb;
   color: #ffffff;
