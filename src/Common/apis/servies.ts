@@ -1,3 +1,4 @@
+import client from '../../client';
 import instance from './instance';
 
 export const getUserInfo = async () => {
@@ -24,6 +25,11 @@ export const getClientDetailInfo = async (clientId: number | string | undefined)
 export const getFileDownload = async (fileName: string | undefined) => {
   if (!fileName) return;
   const { data } = await instance.get(`/s3/download?fileName=${fileName}`);
+  return data;
+}
+
+export const postAI = async (question: string) => {
+  const { data } = await client.post(`/openai/chat`, {question: question});
   return data;
 }
 

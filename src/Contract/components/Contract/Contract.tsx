@@ -13,7 +13,7 @@ import {
   Image,
   pdf,
 } from '@react-pdf/renderer';
-import { BlueBtn, FlexContainer } from '../../../Common/common';
+import { BlueBtn, FlexContainer, FloatingAIButton } from '../../../Common/common';
 
 import SideSheetVideo from './SideSheetVideo';
 import styled from '@emotion/styled';
@@ -24,6 +24,9 @@ import { postFileUpload } from '../../../Common/apis/servies';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'react-router-dom';
 import { sendPageWS, sendSignWS } from '../../servies/contractWebsocket';
+import AIArea from '../../../Common/components/AIArea';
+import Modal from '../../../Common/components/Modal';
+import AIButton from '../../../Common/components/AIButton';
 
 interface Props {
   localVideoRef: React.RefObject<HTMLVideoElement>;
@@ -41,13 +44,22 @@ const Contract = forwardRef<HTMLDivElement, Props>(
     const isDrawing = useRef(false);
     const signatureCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]); // Array of canvas refs
 
-
     const { documentItem } = useDocumentStore(); // useDocumentStore과 상호적인 상화 수행
     const [currentPage, setCurrentPage] = useState(1);
     const [signatureDataURLs, setSignatureDataURLs] = useState<string[]>([]); // Array 상태로 변경
     const [sectionDrawingList, setSectionDrawingList] = useState<any[]>([]);
     const [currentItem, setCurrentItem] = useState<number>(0);
     const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
+
+    const [isModalActive, setIsModalActive] = useState(false);
+
+    const handleOpenModal = () => {
+      setIsModalActive(true);
+    };
+
+    const handleCloseModal = () => {
+      setIsModalActive(false);
+    };
 
     useEffect(() => {
       if (msgItem) {
@@ -102,7 +114,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       await sendPageWS({ stompClient, data });
     };
 
-    const handleSign = async (signNum: number, imgUrl:string) => {
+    const handleSign = async (signNum: number, imgUrl: string) => {
       if (!roomId) return;
       const data = {
         roomId: roomId,
@@ -135,7 +147,6 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       onFileUpload.mutate(blobToFile(blob, 'dynamic_output.pdf'));
     };
 
-
     useEffect(() => {
       const section1 = documentItem.sections[currentPage * 2 - 2];
       const section2 = documentItem.sections[currentPage * 2 - 1];
@@ -149,7 +160,6 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       }
       setSectionDrawingList(combinedList);
     }, [currentPage, documentItem]);
-
 
     const handleNextPage = () => {
       if (currentPage < totalPages) {
@@ -186,7 +196,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         console.log(`Saved Image for canvas ${index}:`, dataURL);
         setCurrentItem(currentItem + 1);
 
-        handleSign(index+1, dataURL);
+        handleSign(index + 1, dataURL);
       }
     };
 
@@ -289,7 +299,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         </LeftPrimarySection>
         <RightSideSheet>
           <SideSheetVideo localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
-          <FlexContainer padding="20px">
+          <FlexContainer padding="20px" marginBottom="100px">
             {
               <PDFDownloadLink
                 document={
@@ -311,7 +321,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
             }
             {/* <BlueBtn onClick={handleClickDownload}>감자</BlueBtn> */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <BlueBtn onClick={() => handlePageDown(currentPage -1)} disabled={currentPage === 1}>
+              <BlueBtn onClick={() => handlePageDown(currentPage - 1)} disabled={currentPage === 1}>
                 이전
               </BlueBtn>
               <span style={{ margin: '0 10px' }}>
@@ -368,6 +378,13 @@ const Contract = forwardRef<HTMLDivElement, Props>(
             )}
           </FlexContainer>
         </RightSideSheet>
+        {isModalActive ? (
+          <Modal isActive={isModalActive} onClose={handleCloseModal} />
+        ) : (
+          <FloatingAIButton>
+            <AIButton onClick={handleOpenModal} isActive={isModalActive} />
+          </FloatingAIButton>
+        )}
       </StContainer>
     );
   },
