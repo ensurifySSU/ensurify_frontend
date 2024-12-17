@@ -24,9 +24,10 @@ const DashboardTable = () => {
             <StTableCell>{item.name}</StTableCell>
             <StTableCell>{item.category}</StTableCell>
             <StTableCell>{item.client}</StTableCell>
-            <StTableCell>-</StTableCell>
             <StTableCell>{item.date}</StTableCell>
-            <StTableCell>-</StTableCell>
+            <StTableCell>
+              <StDownload>계약서 다운로드</StDownload>
+            </StTableCell>
           </StTableRow>
         ))}
       </tbody>
@@ -70,4 +71,11 @@ const StTableCell = styled.td`
   &:not(:last-child) {
     border-right: 1px solid #aeaeae;
   }
+`;
+
+const StDownload = styled.button`
+  cursor: pointer;
+  padding: 0.5rem;
+  border: 1px solid #000;
+  border-radius: 5px;
 `;

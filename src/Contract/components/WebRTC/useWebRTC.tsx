@@ -63,7 +63,7 @@ const useWebRTC = ({
         console.log('addcandidate');
       }
       if (message.type === 'leave') {
-        alert('상대가 방을 나갔습니다.');
+        // alert('상대가 방을 나갔습니다.');
         // remoteVideoRef.current = null;
       }
     };

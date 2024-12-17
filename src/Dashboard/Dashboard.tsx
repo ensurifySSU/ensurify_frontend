@@ -29,6 +29,8 @@ const Dashboard = () => {
         </StAgentInfo>
         <StCategory>
           <CategoryButton content="IRP" />
+          <CategoryButton content="DB" />
+          <CategoryButton content="DC" />
         </StCategory>
       </StSideSheet>
       <StDashboard>
@@ -81,10 +83,13 @@ const StBankName = styled.p`
 `;
 
 const StCategory = styled.div`
+  display: flex;
+  gap: 1rem;
   padding: 2rem 0;
 `;
 
 const StDashboard = styled.div`
+  overflow-y: hidden;
   height: 100%;
   margin-left: ${SIDESHEETWIDTH}rem;
   padding: 2rem;

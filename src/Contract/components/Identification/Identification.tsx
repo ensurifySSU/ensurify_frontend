@@ -62,6 +62,9 @@ const Identification = forwardRef<HTMLDivElement, Props>(
                   <br />
                   카메라에 신분증을 제시해주세요.
                 </StMainText>
+                <StTip>
+                  Ensurify는 고객님의 정보를 바탕으로 계약에 대한 맞춤형 QnAI를 제공합니다.
+                </StTip>
               </StMain>
             )}
           </StWrapper>
@@ -80,6 +83,7 @@ const Identification = forwardRef<HTMLDivElement, Props>(
               <StColum>
                 <StSideSheetVideo ref={remoteVideoRef} autoPlay playsInline muted={true} />
               </StColum>
+
               <StSideSheetText>
                 상담원이 확인을 완료하면 <br />
                 계약이 시작됩니다.
@@ -113,11 +117,14 @@ const StWrapper = styled.div`
 const StSideSheetVideo = styled.video`
   transform: scaleX(-1);
   width: 100%;
+  background-color: #d9d9d9;
 `;
 
 const StMainVideo = styled.video`
   transform: scaleX(-1);
   width: 80%;
+  min-width: 40rem;
+  background-color: #d9d9d9;
 `;
 
 const StColum = styled.div`
@@ -135,6 +142,7 @@ const StMain = styled.div`
 
 const StSideSheetText = styled.p`
   width: 23rem;
+  margin-bottom: 2rem;
 
   font-size: 2rem;
   font-weight: 600;
@@ -145,5 +153,13 @@ const StSideSheetText = styled.p`
 const StMainText = styled.p`
   font-size: 1.8rem;
   font-size: 500;
+  line-height: 2rem;
   text-align: center;
+`;
+
+const StTip = styled.p`
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  background: rgb(255 215 85 / 10%);
+  border-radius: 10px;
 `;

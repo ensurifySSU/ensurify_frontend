@@ -33,7 +33,7 @@ const Home = () => {
           <Button content="새 계약 생성하기" handleClick={() => navigation('/createRoom')} />
         </StIntroSection>
         <Suspense fallback={<div>로딩중</div>}>
-          <HomeCard name={data?.result?.name} />
+          <HomeCard name={data?.result?.name} imageUrl={data?.result?.imageUrl} />
         </Suspense>
       </StWrapper>
     </Stcontainer>
