@@ -23,6 +23,8 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
+  const [userType, setUserType] = useState<string>(sessionStorage.getItem('token') ? 'user' : 'client');
+
   const [input, setInput] = useState('');
   const [answer, setAnswer] = useState('');
   const [status, setStatus] = useState(false);
@@ -45,7 +47,7 @@ const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
     //   alert('메시지를 입력해주세요.');
     //   return;
     // }
-    onAIMessage.mutate(input);
+    onAIMessage.mutate({ question: input, tokenType: userType });
     setInput('');
   };
 

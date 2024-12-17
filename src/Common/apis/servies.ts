@@ -1,4 +1,5 @@
 import client from '../../client';
+import clientInstance from './clientInstance';
 import instance from './instance';
 
 export const getUserInfo = async () => {
@@ -26,21 +27,24 @@ export const getFileDownload = async (fileName: string | undefined) => {
   if (!fileName) return;
   const { data } = await instance.get(`/s3/download?fileName=${fileName}`);
   return data;
-}
+};
 
-export const postAI = async (question: string) => {
-  const { data } = await instance.post(`/openai/chat`, {question: question});
+export const postAI = async (item: any) => {
+  const { data } =
+    item?.tokenType == 'client'
+      ? await clientInstance.post(`/openai/chat`, { question: item?.question })
+      : await instance.post(`/openai/chat`, { question: item?.question });
   return data;
-}
+};
 
 export const postFileUpload = async (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
   const config = {
     headers: {
-      'Content-Type': 'multipart/form-data'
+      'Content-Type': 'multipart/form-data',
     },
   };
   const { data } = await instance.post(`/s3/upload`, formData, config);
   return data;
-}
+};
