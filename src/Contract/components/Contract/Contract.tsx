@@ -28,6 +28,9 @@ import AIArea from '../../../Common/components/AIArea';
 import Modal from '../../../Common/components/Modal';
 import AIButton from '../../../Common/components/AIButton';
 import { check } from '../../../../node_modules/prettier/standalone.d';
+import Button from '../../../Common/components/Button';
+import useRole from '../../../Common/hooks/useRole';
+import { useRoleStore } from '../../../Common/stores/roleStore';
 
 interface Props {
   localVideoRef: React.RefObject<HTMLVideoElement>;
@@ -38,9 +41,9 @@ interface Props {
 
 const Contract = forwardRef<HTMLDivElement, Props>(
   ({ localVideoRef, remoteVideoRef, stompClient, msgItem }: Props, ref) => {
-    console.log(localVideoRef.current);
-
     const { roomId } = useParams();
+    useRole();
+    const { role } = useRoleStore();
 
     const isDrawing = useRef(false);
     const signatureCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]); // Array of canvas refs
@@ -73,21 +76,20 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         } else if (msgItem?.signNum) {
           const canvas = signatureCanvasRefs.current[msgItem.signNum];
           if (canvas) {
-            const dataURL = msgItem.imgUrl
+            const dataURL = msgItem.imgUrl;
             setSignatureDataURLs((prev) => {
               const updated = [...prev];
-              updated[msgItem.signNum-1] = dataURL;
+              updated[msgItem.signNum - 1] = dataURL;
               return updated;
             });
           }
-          
         } else if (msgItem?.checkNum) {
           const canvas = signatureCanvasRefs.current[msgItem.checkNum];
           if (canvas) {
-            const dataURL = msgItem.imgUrl
+            const dataURL = msgItem.imgUrl;
             setSignatureDataURLs((prev) => {
               const updated = [...prev];
-              updated[msgItem.checkNum-1] = dataURL;
+              updated[msgItem.checkNum - 1] = dataURL;
               return updated;
             });
           }
@@ -199,7 +201,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         console.log(`Saved Image for canvas ${index}:`, dataURL);
         setCurrentItem(currentItem + 1);
 
-        handleSign(index+1, dataURL);
+        handleSign(index + 1, dataURL);
       }
     };
 
@@ -298,13 +300,16 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                 currentPage={currentPage}
               />
             </PDFViewer>
-            { userType != 'client' && signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
+            {signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
+            {userType != 'client' && signatureDataURLs.length < sectionDrawingList.length && (
+              <ModalOverlay />
+            )}
           </StWrapper>
         </LeftPrimarySection>
         <RightSideSheet>
           <SideSheetVideo localVideoRef={localVideoRef} remoteVideoRef={remoteVideoRef} />
           <FlexContainer padding="20px" marginBottom="100px">
-            {
+            {/* {
               <PDFDownloadLink
                 document={
                   <DownloadDocument
@@ -318,68 +323,82 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                   loading ? (
                     <BlueBtn disabled>Loading document...</BlueBtn>
                   ) : (
-                    <BlueBtn onClick={handleClickDownload}>Download</BlueBtn>
+                    <BlueBtn onClick={handleClickDownload}>계약서 pdf 다운로드</BlueBtn>
                   )
                 }
               </PDFDownloadLink>
             }
             <BlueBtn onClick={handleClickDownload} style={{ marginLeft: '10px' }}>
               파일 업로드
-            </BlueBtn>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <BlueBtn onClick={() => handlePageDown(currentPage - 1)} disabled={currentPage === 1}>
-                이전
-              </BlueBtn>
-              <span style={{ margin: '0 10px' }}>
+            </BlueBtn> */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: '1rem',
+              }}
+            >
+              <Button
+                handleClick={() => handlePageDown(currentPage - 1)}
+                isActive={currentPage !== 1}
+                content="이전"
+                width="10rem"
+              />
+              {/* <span style={{ margin: '0 10px' }}>
                 Page {currentPage} of {totalPages}
-              </span>
-              <BlueBtn
-                onClick={() => {
+              </span> */}
+              <Button
+                handleClick={() => {
                   handlePageUp(currentPage + 1);
                 }}
-                disabled={currentPage === totalPages}
-              >
-                다음
-              </BlueBtn>
+                isActive={currentPage !== totalPages}
+                content="다음"
+                width="10rem"
+              />
             </div>
-
-            {sectionDrawingList.map(
-              (item, index) =>
-                currentItem === index && (
-                  <div key={index} style={{ marginTop: '20px' }}>
-                    <Text>서명을 해주세요:</Text>
-                    <canvas
-                      ref={(el) => (signatureCanvasRefs.current[index] = el)}
-                      style={{
-                        width: '100%',
-                        height: 'fit-content',
-                        border: '1px solid #ccc',
-                        marginTop: '10px',
-                      }}
-                      onMouseDown={(e) => startDrawing(e, index)}
-                      onMouseMove={(e) => draw(e, index)}
-                      onMouseUp={endDrawing}
-                      onMouseLeave={endDrawing}
-                    ></canvas>
-                    <div
-                      style={{
-                        display: 'flex',
-                        width: '100%',
-                        height: 'fit-content',
-                        justifyContent: 'center',
-                        marginTop: '10px',
-                      }}
-                    >
-                      <BlueBtn onClick={() => handleClearSignature(index)}>초기화</BlueBtn>
-                      <BlueBtn
-                        onClick={() => handleSaveSignature(index)}
-                        style={{ marginLeft: '10px' }}
-                      >
-                        저장
-                      </BlueBtn>
-                    </div>
-                  </div>
-                ),
+            {role === 'client' ? (
+              <>
+                {sectionDrawingList.map(
+                  (item, index) =>
+                    currentItem === index && (
+                      <div key={index} style={{ marginTop: '20px' }}>
+                        <Text>서명을 해주세요:</Text>
+                        <canvas
+                          ref={(el) => (signatureCanvasRefs.current[index] = el)}
+                          style={{
+                            width: '100%',
+                            height: 'fit-content',
+                            border: '1px solid #ccc',
+                            marginTop: '10px',
+                          }}
+                          onMouseDown={(e) => startDrawing(e, index)}
+                          onMouseMove={(e) => draw(e, index)}
+                          onMouseUp={endDrawing}
+                          onMouseLeave={endDrawing}
+                        ></canvas>
+                        <div
+                          style={{
+                            display: 'flex',
+                            width: '100%',
+                            height: 'fit-content',
+                            justifyContent: 'center',
+                            marginTop: '10px',
+                            gap: '2rem',
+                          }}
+                        >
+                          <Button
+                            handleClick={() => handleClearSignature(index)}
+                            content="초기화"
+                          />
+                          <Button handleClick={() => handleSaveSignature(index)} content="저장" />
+                        </div>
+                      </div>
+                    ),
+                )}
+              </>
+            ) : (
+              <></>
             )}
           </FlexContainer>
         </RightSideSheet>
@@ -421,77 +440,92 @@ Font.register({
 // Define PDF Document Styles
 const pdfStyles = StyleSheet.create({
   title: {
+    marginBottom: 10,
+    fontFamily: 'SpoqaHanSans',
     fontSize: 20,
-    fontFamily: 'SpoqaHanSans',
     fontWeight: 'bold',
-    marginBottom: 10,
   },
-  subTitle: {
+
+  subtitle: {
+    marginBottom: 10,
+    fontFamily: 'SpoqaHanSans',
     fontSize: 16,
-    fontFamily: 'SpoqaHanSans',
-    marginBottom: 10,
   },
+
   author: {
-    fontSize: 12,
-    fontFamily: 'SpoqaHanSans',
     marginBottom: 20,
+    fontFamily: 'SpoqaHanSans',
+    fontSize: 12,
   },
+
   page: {
-    padding: 20,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    padding: 20,
   },
+
   header: {
-    textAlign: 'center',
     marginBottom: 10,
+    textAlign: 'center',
   },
-  headerImage: {
+
+  headerimage: {
     width: '100%',
     height: 50,
   },
+
   footer: {
-    textAlign: 'center',
     marginTop: 10,
+    textAlign: 'center',
   },
-  footerImage: {
+
+  footerimage: {
     width: '100%',
     height: 30,
   },
-  sectionContainer: {
+
+  sectioncontainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+
     marginVertical: 20,
   },
+
   section: {
     width: '48%', // 두 섹션이 세로로 나뉘도록 50% 이하로 설정
-    border: '1px solid #ddd',
     padding: 10,
+    border: '1px solid #ddd',
   },
-  sectionTitle: {
-    fontSize: 14,
+
+  sectiontitle: {
     marginBottom: 5,
+    fontSize: 14,
     fontWeight: 'bold',
   },
+
   text: {
+    marginBottom: 5,
     fontSize: 12,
-    marginBottom: 5,
   },
-  chartImage: {
+
+  chartimage: {
     width: '100%',
     height: 'auto',
     marginBottom: 5,
   },
-  drawingImage: {
+
+  drawingimage: {
     width: '100%',
     height: 'auto',
     marginBottom: 5,
   },
-  signatureCanvas: {
-    border: '1px solid #000',
+
+  signaturecanvas: {
     width: '100%',
     height: 150,
     marginTop: 20,
+    border: '1px solid #000',
   },
 });
 
