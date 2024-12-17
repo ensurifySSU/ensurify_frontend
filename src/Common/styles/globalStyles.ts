@@ -15,6 +15,10 @@ const globalStyles = css`
   }
 
   body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     font-family:
       'Pretendard Variable',
       Pretendard,
@@ -37,6 +41,7 @@ const globalStyles = css`
 
   button {
     cursor: pointer;
+    background-color: transparent;
     border: none;
   }
 `;
