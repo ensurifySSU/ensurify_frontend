@@ -12,6 +12,7 @@ interface StyleProps {
   alginItems?: string;
   justifyContent?: string;
   flexDirection?: string;
+  marginBottom?: string;
 }
 
 export const Txt12 = styled.span`
@@ -79,6 +80,7 @@ export const FlexContainer = styled.div<StyleProps>`
   min-height: ${(props) => props.minHeight || ""};
   padding: ${(props) => props.padding || ""};
   margin: ${(props) => props.margin || ""};
+  margin-bottom: ${(props) => props.marginBottom || ""};
 `;
 
 export const FlexCenterContainer = styled.div`
@@ -151,10 +153,148 @@ export const LineEEE = styled.div`
 `;
 
 export const BlueBtn = styled.button`
-  width: 200px;
-  height: 70px;
+  width: 100px;
+  height: 50px;
   background-color: #2563eb;
   color: #ffffff;
   border: none;
   border-radius: 20px;
+`;
+export const StyledAIButton = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+
+  img {
+    width: 100px;
+    height: 100px;
+  }
+`;
+
+export const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+`;
+
+export const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+`;
+
+export const TextButton = styled.a`
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  border: 1px solid #000;
+  background: white;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+`;
+
+// Styled Components
+export const ChatInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const ChatInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+`;
+
+export const ModalFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+
+// Styled Components
+export const Container = styled.div`
+  position: relative;
+  width: 300px;
+  height: 400px;
+  background-color: #fff8e6; /* 부드러운 배경색 */
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+  flex-direction: column;
+`;
+
+export const InfoButton = styled.button`
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
+export const FloatingAIButton = styled.div`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+`;
+
+export const AnswerText = styled.p`
+  background-color: #f9f9f9; /* 부드러운 배경색 */
+  border: 1px solid #e0e0e0; /* 테두리 추가 */
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  max-height: 150px; /* 긴 답변에 대한 스크롤 처리 */
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+export const InfoListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 10;
+  max-height: 150px;
+  overflow-y: auto; /* 버튼 수가 많으면 스크롤 */
 `;

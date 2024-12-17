@@ -37,9 +37,9 @@
     },
     {
       "title": "3-2",
-      "file": ["3-2.png"],
-      "sign": [],
-      "check": []
+      "file": [],
+      "sign": [["yellow_highlight_page_8_0.png", false]],
+      "check": [["yellow_highlight_page_8_1.png", false]]
     },
     {
       "title": "4-1",
@@ -85,9 +85,9 @@
     },
     {
       "title": "7-2",
-      "file": [],
-      "sign": [["yellow_highlight_page_8_0.png", false]],
-      "check": [["yellow_highlight_page_8_1.png", false]]
+      "file": ["3-2.png"],
+      "sign": [],
+      "check": []
     }
   ]
 }
