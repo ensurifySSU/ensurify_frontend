@@ -13,7 +13,7 @@ import {
   Image,
   pdf,
 } from '@react-pdf/renderer';
-import { BlueBtn, FlexContainer, FloatingAIButton } from '../../../Common/common';
+import { BlueBtn, FlexContainer, FloatingAIButton, ModalOverlay } from '../../../Common/common';
 
 import SideSheetVideo from './SideSheetVideo';
 import styled from '@emotion/styled';
@@ -23,10 +23,11 @@ import { useMutation } from '@tanstack/react-query';
 import { postFileUpload } from '../../../Common/apis/servies';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'react-router-dom';
-import { sendPageWS, sendSignWS } from '../../servies/contractWebsocket';
+import { sendPageWS, sendSignWS, sendCheckWS } from '../../servies/contractWebsocket';
 import AIArea from '../../../Common/components/AIArea';
 import Modal from '../../../Common/components/Modal';
 import AIButton from '../../../Common/components/AIButton';
+import { check } from '../../../../node_modules/prettier/standalone.d';
 
 interface Props {
   localVideoRef: React.RefObject<HTMLVideoElement>;
@@ -50,6 +51,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
     const [sectionDrawingList, setSectionDrawingList] = useState<any[]>([]);
     const [currentItem, setCurrentItem] = useState<number>(0);
     const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
+
 
     const [isModalActive, setIsModalActive] = useState(false);
 
@@ -119,9 +121,9 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       const data = {
         roomId: roomId,
         signNum: signNum,
+        // checkNum: signNum,
         imgUrl: imgUrl,
       };
-      console.log('handleSign:', data);
       await sendSignWS({ stompClient, data });
     };
 
@@ -295,6 +297,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                 currentPage={currentPage}
               />
             </PDFViewer>
+            { signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
           </StWrapper>
         </LeftPrimarySection>
         <RightSideSheet>
@@ -319,7 +322,9 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                 }
               </PDFDownloadLink>
             }
-            {/* <BlueBtn onClick={handleClickDownload}>감자</BlueBtn> */}
+            <BlueBtn onClick={handleClickDownload} style={{ marginLeft: '10px' }}>
+              파일 업로드
+            </BlueBtn>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <BlueBtn onClick={() => handlePageDown(currentPage - 1)} disabled={currentPage === 1}>
                 이전
@@ -333,7 +338,6 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                 }}
                 disabled={currentPage === totalPages}
               >
-                {/* <BlueBtn onClick={handleNextPage} disabled={currentPage === totalPages}> */}
                 다음
               </BlueBtn>
             </div>
