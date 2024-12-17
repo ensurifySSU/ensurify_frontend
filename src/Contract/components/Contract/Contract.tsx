@@ -52,6 +52,9 @@ const Contract = forwardRef<HTMLDivElement, Props>(
     const [currentItem, setCurrentItem] = useState<number>(0);
     const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
 
+    const [userType, setUserType] = useState<string>(
+      sessionStorage.getItem('token') ? 'user' : 'client',
+    );
 
     const [isModalActive, setIsModalActive] = useState(false);
 
@@ -124,6 +127,8 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         // checkNum: signNum,
         imgUrl: imgUrl,
       };
+
+      console.log(data);
       await sendSignWS({ stompClient, data });
     };
 
@@ -297,7 +302,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                 currentPage={currentPage}
               />
             </PDFViewer>
-            { signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
+            { userType != 'client' && signatureDataURLs.length < sectionDrawingList.length && <ModalOverlay />}
           </StWrapper>
         </LeftPrimarySection>
         <RightSideSheet>
@@ -383,7 +388,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
           </FlexContainer>
         </RightSideSheet>
         {isModalActive ? (
-          <Modal isActive={isModalActive} onClose={handleCloseModal} />
+          <Modal isActive={isModalActive} onClose={handleCloseModal} userType={userType} />
         ) : (
           <FloatingAIButton>
             <AIButton onClick={handleOpenModal} isActive={isModalActive} />
