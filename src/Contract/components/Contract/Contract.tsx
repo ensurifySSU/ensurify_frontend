@@ -11,6 +11,7 @@ import {
   PDFViewer,
   Font,
   Image,
+  pdf,
 } from '@react-pdf/renderer';
 import { BlueBtn, FlexContainer } from '../../../Common/common';
 
@@ -18,29 +19,122 @@ import SideSheetVideo from './SideSheetVideo';
 import styled from '@emotion/styled';
 import useDocumentStore from '../../../Common/stores/useDocumentStore';
 import { DocumentTypes } from '../../../Common/types/type';
+import { useMutation } from '@tanstack/react-query';
+import { postFileUpload } from '../../../Common/apis/servies';
+import { Client } from '@stomp/stompjs';
+import { useParams } from 'react-router-dom';
+import { sendPageWS, sendSignWS } from '../../servies/contractWebsocket';
 
 interface Props {
   localVideoRef: React.RefObject<HTMLVideoElement>;
   remoteVideoRef: React.RefObject<HTMLVideoElement>;
+  stompClient: Client | null;
+  msgItem: any;
 }
 
 const Contract = forwardRef<HTMLDivElement, Props>(
-  ({ localVideoRef, remoteVideoRef }: Props, ref) => {
+  ({ localVideoRef, remoteVideoRef, stompClient, msgItem }: Props, ref) => {
     console.log(localVideoRef.current);
+
+    const { roomId } = useParams();
 
     const isDrawing = useRef(false);
     const signatureCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]); // Array of canvas refs
 
+
     const { documentItem } = useDocumentStore(); // useDocumentStore과 상호적인 상화 수행
-    const [isClient, setIsClient] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [signatureDataURLs, setSignatureDataURLs] = useState<string[]>([]); // Array 상태로 변경
     const [sectionDrawingList, setSectionDrawingList] = useState<any[]>([]);
     const [currentItem, setCurrentItem] = useState<number>(0);
+    const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
 
     useEffect(() => {
-      setIsClient(true);
-    }, []);
+      if (msgItem) {
+        if (msgItem?.pageNum) {
+          setCurrentPage(msgItem.pageNum);
+        } else if (msgItem?.signNum) {
+          const canvas = signatureCanvasRefs.current[msgItem.signNum];
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              const img = new Image();
+              img.src = msgItem.imgUrl;
+              img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+              };
+            }
+          }
+        } else if (msgItem?.checkNum) {
+          const canvas = signatureCanvasRefs.current[msgItem.checkNum];
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              const img = new Image();
+              img.src = msgItem.imgUrl;
+              img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+              };
+            }
+          }
+        }
+      }
+      console.log('msgItem:', msgItem);
+    }, [msgItem]);
+
+    const handlePageUp = async (pageNum: number) => {
+      if (!roomId) return;
+      // if (currentPage <= totalPages) return;
+      const data = {
+        roomId: roomId,
+        pageNum: pageNum,
+      };
+      await sendPageWS({ stompClient, data });
+    };
+
+    const handlePageDown = async (pageNum: number) => {
+      if (!roomId) return;
+      // if (currentPage < 1) return;
+      const data = {
+        roomId: roomId,
+        pageNum: pageNum,
+      };
+      await sendPageWS({ stompClient, data });
+    };
+
+    const handleSign = async (signNum: number, imgUrl:string) => {
+      if (!roomId) return;
+      const data = {
+        roomId: roomId,
+        signNum: signNum,
+        imgUrl: imgUrl,
+      };
+      console.log('handleSign:', data);
+      await sendSignWS({ stompClient, data });
+    };
+
+    const onFileUpload = useMutation({
+      mutationFn: postFileUpload,
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: (error) => {
+        console.log('에러 발생! 아래 메시지를 확인해주세요.', error);
+      },
+    });
+
+    const handleClickDownload = async () => {
+      const blob = await pdf(
+        <DownloadDocument documentData={documentItem} signatureDataURLs={signatureDataURLs} />,
+      ).toBlob();
+
+      const blobToFile = (blob: Blob, fileName: string): File => {
+        return new File([blob], fileName, { type: blob.type });
+      };
+
+      onFileUpload.mutate(blobToFile(blob, 'dynamic_output.pdf'));
+    };
+
 
     useEffect(() => {
       const section1 = documentItem.sections[currentPage * 2 - 2];
@@ -56,7 +150,6 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       setSectionDrawingList(combinedList);
     }, [currentPage, documentItem]);
 
-    const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
 
     const handleNextPage = () => {
       if (currentPage < totalPages) {
@@ -92,6 +185,8 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         });
         console.log(`Saved Image for canvas ${index}:`, dataURL);
         setCurrentItem(currentItem + 1);
+
+        handleSign(index+1, dataURL);
       }
     };
 
@@ -177,7 +272,6 @@ const Contract = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       console.log('Signature Data URLs:', signatureDataURLs);
-      console.log('Section Drawing List:', sectionDrawingList);
     }, [signatureDataURLs, sectionDrawingList]);
 
     return (
@@ -210,19 +304,26 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                   loading ? (
                     <BlueBtn disabled>Loading document...</BlueBtn>
                   ) : (
-                    <BlueBtn>Download</BlueBtn>
+                    <BlueBtn onClick={handleClickDownload}>Download</BlueBtn>
                   )
                 }
               </PDFDownloadLink>
             }
+            {/* <BlueBtn onClick={handleClickDownload}>감자</BlueBtn> */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <BlueBtn onClick={handlePreviousPage} disabled={currentPage === 1}>
+              <BlueBtn onClick={() => handlePageDown(currentPage -1)} disabled={currentPage === 1}>
                 이전
               </BlueBtn>
               <span style={{ margin: '0 10px' }}>
                 Page {currentPage} of {totalPages}
               </span>
-              <BlueBtn onClick={handleNextPage} disabled={currentPage === totalPages}>
+              <BlueBtn
+                onClick={() => {
+                  handlePageUp(currentPage + 1);
+                }}
+                disabled={currentPage === totalPages}
+              >
+                {/* <BlueBtn onClick={handleNextPage} disabled={currentPage === totalPages}> */}
                 다음
               </BlueBtn>
             </div>
@@ -457,7 +558,6 @@ const DownloadDocument: React.FC<{
   signatureDataURLs: string[] | null;
 }> = ({ documentData, signatureDataURLs }) => {
   const { sections, header, footer } = documentData;
-
   // 페이지 수 계산: 두 개의 섹션이 한 페이지에 표시됨
   const totalPages = Math.ceil(sections.length / 2);
 
