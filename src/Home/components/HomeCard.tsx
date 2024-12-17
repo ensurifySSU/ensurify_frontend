@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import { bankLogo } from '../assets/0_index';
 
-const HomeCard = ({ name }: { name: string }) => {
+const HomeCard = ({ name, imageUrl }: { name: string; imageUrl: string }) => {
   const navigation = useNavigate();
   return (
     <StContainer>
@@ -17,7 +17,7 @@ const HomeCard = ({ name }: { name: string }) => {
       </StBankInfo>
       <StAgentInfo>
         <StLabel>상담원 정보</StLabel>
-        <div style={{ width: '12rem', height: '15rem', backgroundColor: '#ccc' }} />
+        <img style={{ width: '12rem', height: '15rem', backgroundColor: '#ccc' }} src={imageUrl} />
         <p>{name}</p>
       </StAgentInfo>
     </StContainer>
