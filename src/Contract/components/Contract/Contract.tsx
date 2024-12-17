@@ -73,26 +73,23 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         } else if (msgItem?.signNum) {
           const canvas = signatureCanvasRefs.current[msgItem.signNum];
           if (canvas) {
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              const img = new Image();
-              img.src = msgItem.imgUrl;
-              img.onload = () => {
-                ctx.drawImage(img, 0, 0);
-              };
-            }
+            const dataURL = msgItem.imgUrl
+            setSignatureDataURLs((prev) => {
+              const updated = [...prev];
+              updated[msgItem.signNum-1] = dataURL;
+              return updated;
+            });
           }
+          
         } else if (msgItem?.checkNum) {
           const canvas = signatureCanvasRefs.current[msgItem.checkNum];
           if (canvas) {
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-              const img = new Image();
-              img.src = msgItem.imgUrl;
-              img.onload = () => {
-                ctx.drawImage(img, 0, 0);
-              };
-            }
+            const dataURL = msgItem.imgUrl
+            setSignatureDataURLs((prev) => {
+              const updated = [...prev];
+              updated[msgItem.checkNum-1] = dataURL;
+              return updated;
+            });
           }
         }
       }
@@ -127,7 +124,6 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         // checkNum: signNum,
         imgUrl: imgUrl,
       };
-
       console.log(data);
       await sendSignWS({ stompClient, data });
     };
@@ -203,7 +199,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
         console.log(`Saved Image for canvas ${index}:`, dataURL);
         setCurrentItem(currentItem + 1);
 
-        handleSign(index + 1, dataURL);
+        handleSign(index+1, dataURL);
       }
     };
 
