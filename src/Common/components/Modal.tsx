@@ -23,7 +23,9 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
-  const [userType, setUserType] = useState<string>(sessionStorage.getItem('token') ? 'user' : 'client');
+  const [userType, setUserType] = useState<string>(
+    sessionStorage.getItem('token') ? 'user' : 'client',
+  );
 
   const [input, setInput] = useState('');
   const [answer, setAnswer] = useState('');
@@ -51,6 +53,10 @@ const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
     setInput('');
   };
 
+  const onClickAIQuestion = (question: string) => {
+    onAIMessage.mutate({ question: question, tokenType: userType });
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -72,7 +78,10 @@ const Modal: React.FC<ModalProps> = ({ isActive, onClose }) => {
     <ModalOverlay onClick={onClose}>
       <Container onClick={(e) => e.stopPropagation()}>
         <InfoListContainer>
-          {infoList && infoList.map((item) => <InfoButton>{item}</InfoButton>)}
+          {infoList &&
+            infoList.map((item) => (
+              <InfoButton onClick={() => onClickAIQuestion(item)}>{item}</InfoButton>
+            ))}
         </InfoListContainer>
         <ChatInput
           placeholder="메시지를 입력하세요..."
