@@ -177,6 +177,94 @@ const PDFDocument: React.FC<{
   );
 };
 
+const DownloadDocument: React.FC<{
+  documentData: DocumentTypes;
+  signatureDataURLs: string[] | null;
+}> = ({ documentData, signatureDataURLs }) => {
+  const { sections, header, footer } = documentData;
+
+  // 페이지 수 계산: 두 개의 섹션이 한 페이지에 표시됨
+  const totalPages = Math.ceil(sections.length / 2);
+
+  return (
+    <Document>
+      {Array.from({ length: totalPages }).map((_, pageIndex) => {
+        const section1 = sections[pageIndex * 2];     // 첫 번째 섹션
+        const section2 = sections[pageIndex * 2 + 1]; // 두 번째 섹션 (있을 경우)
+
+        return (
+          <Page key={`page-${pageIndex}`} size="A4" style={pdfStyles.page}>
+            {/* Header */}
+            <View style={pdfStyles.header}>
+              {header && (
+                <Image
+                  src={`/dummies/woori_first/${header}`}
+                  style={pdfStyles.headerImage}
+                />
+              )}
+            </View>
+
+            {/* Two Sections */}
+            <View style={pdfStyles.sectionContainer}>
+              {/* Section 1 */}
+              <View style={pdfStyles.section}>
+                {section1?.file.length > 0
+                  ? section1.file.map((file, idx) => (
+                      <Image
+                        key={`file-${pageIndex}-1-${idx}`}
+                        style={pdfStyles.chartImage}
+                        src={`/dummies/woori_first/${file}`}
+                      />
+                    ))
+                  : section1?.check
+                      .concat(section1?.sign)
+                      .map((item, idx) => (
+                        <Image
+                          key={`highlight-${pageIndex}-1-${idx}`}
+                          style={pdfStyles.drawingImage}
+                          src={signatureDataURLs?.[idx] || `/dummies/woori_first/${item[0]}`}
+                        />
+                      ))}
+              </View>
+
+              {/* Section 2 */}
+              <View style={pdfStyles.section}>
+                {section2?.file.length > 0
+                  ? section2.file.map((file, idx) => (
+                      <Image
+                        key={`file-${pageIndex}-2-${idx}`}
+                        style={pdfStyles.chartImage}
+                        src={`/dummies/woori_first/${file}`}
+                      />
+                    ))
+                  : section2?.check
+                      .concat(section2?.sign)
+                      .map((item, idx) => (
+                        <Image
+                          key={`highlight-${pageIndex}-2-${idx}`}
+                          style={pdfStyles.drawingImage}
+                          src={signatureDataURLs?.[idx] || `/dummies/woori_first/${item[0]}`}
+                        />
+                      ))}
+              </View>
+            </View>
+
+            {/* Footer */}
+            <View style={pdfStyles.footer}>
+              {footer && (
+                <Image
+                  src={`/dummies/woori_first/${footer}`}
+                  style={pdfStyles.footerImage}
+                />
+              )}
+            </View>
+          </Page>
+        );
+      })}
+    </Document>
+  );
+};
+
 const PDF: React.FC = () => {
   const isDrawing = useRef(false);
   const signatureCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]); // Array of canvas refs
@@ -318,10 +406,9 @@ const PDF: React.FC = () => {
     <FlexContainer padding="20px">
       <PDFDownloadLink
         document={
-          <PDFDocument
+          <DownloadDocument
             documentData={documentItem}
             signatureDataURLs={signatureDataURLs} // Array로 전달
-            currentPage={currentPage}
           />
         }
         fileName="dynamic_output.pdf"
