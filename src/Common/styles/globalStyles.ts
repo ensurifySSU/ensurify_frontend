@@ -15,6 +15,7 @@ const globalStyles = css`
   }
 
   body {
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
