@@ -12,6 +12,7 @@ import {
 } from '@react-pdf/renderer';
 import { BlueBtn, FlexContainer } from '../common';
 import useDocumentStore from '../stores/useDocumentStore';
+import { DocumentTypes } from '../types/type';
 
 // Register Korean Font
 Font.register({
@@ -21,15 +22,6 @@ Font.register({
 
 // Define PDF Document Styles
 const pdfStyles = StyleSheet.create({
-  page: {
-    flexDirection: 'column',
-    padding: 20,
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    fontSize: 14,
-  },
   title: {
     fontSize: 20,
     fontFamily: 'SpoqaHanSans',
@@ -46,50 +38,56 @@ const pdfStyles = StyleSheet.create({
     fontFamily: 'SpoqaHanSans',
     marginBottom: 20,
   },
+  page: {
+    padding: 20,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  headerImage: {
+    width: '100%',
+    height: 50,
+  },
+  footer: {
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  footerImage: {
+    width: '100%',
+    height: 30,
+  },
+  sectionContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 20,
+  },
+  section: {
+    width: '48%', // 두 섹션이 세로로 나뉘도록 50% 이하로 설정
+    border: '1px solid #ddd',
+    padding: 10,
+  },
   sectionTitle: {
-    fontSize: 16,
-    fontFamily: 'SpoqaHanSans',
-    fontWeight: 'bold',
+    fontSize: 14,
     marginBottom: 5,
+    fontWeight: 'bold',
   },
   text: {
     fontSize: 12,
-    fontFamily: 'SpoqaHanSans',
     marginBottom: 5,
   },
-  table: {
-    display: 'flex',
-    width: 'auto',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-    marginBottom: 10,
-  },
-  tableRow: {
-    flexDirection: 'row',
-  },
-  tableCol: {
-    width: '25%',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
-  },
-  tableCell: {
-    margin: 5,
-    fontSize: 10,
-    fontFamily: 'SpoqaHanSans',
-  },
   chartImage: {
-    width: 200,
-    height: 100,
-    margin: 10,
+    width: '100%',
+    height: 'auto',
+    marginBottom: 5,
   },
   drawingImage: {
-    width: 200,
-    height: 150,
-    margin: 10,
+    width: '100%',
+    height: 'auto',
+    marginBottom: 5,
   },
   signatureCanvas: {
     border: '1px solid #000',
@@ -99,120 +97,157 @@ const pdfStyles = StyleSheet.create({
   },
 });
 
-// Dynamic PDF Document Component
-const PDFDocument: React.FC<{ documentData: Document; signatureDataURL: string | null; currentPage: number }> = ({
-  documentData,
-  signatureDataURL,
-  currentPage,
-}) => (
-  <Document>
-    <Page size="A4" style={pdfStyles.page}>
-      {/* First Page: Title, Subtitle, Author */}
-      <View style={pdfStyles.section}>
-        <Text style={pdfStyles.title}>{documentData.title}</Text>
-        <Text style={pdfStyles.subTitle}>{documentData.subTitle}</Text>
-        <Text style={pdfStyles.author}>{documentData.author}</Text>
-      </View>
+const PDFDocument: React.FC<{
+  documentData: DocumentTypes;
+  signatureDataURLs: string[] | null;
+  currentPage: number;
+}> = ({ documentData, signatureDataURLs, currentPage }) => {
+  const section1 = documentData.sections[currentPage * 2 - 2]; // 첫 번째 섹션
+  const section2 = documentData.sections[currentPage * 2 - 1]; // 두 번째 섹션
 
-      {/* Render Each Section */}
-      {documentData.sections.length > 0 && (
-        <View style={pdfStyles.section}>
-          <Text style={pdfStyles.sectionTitle}>{documentData.sections[currentPage - 1].title}</Text>
-          {documentData.sections[currentPage - 1].content &&
-            documentData.sections[currentPage - 1].content.map((paragraph, idx) => {
-              if (paragraph.includes('[Image Extracted]')) {
-                // If content includes [Image Extracted], render images from file array
-                return documentData.sections[currentPage - 1].file.map((file, fileIndex) => (
-                  <Image key={`file-${fileIndex}`} style={pdfStyles.chartImage} src={file} />
-                ));
-              } else if (paragraph.includes('[Yellow Highlight Extracted]')) {
-                // If content includes [Yellow Highlight Extracted], render images from sign and check arrays
-                const highlightIndex = paragraph.match(/\[Yellow Highlight Extracted\]/g)?.indexOf(paragraph) || 0;
-                if (highlightIndex === 0) {
-                  return documentData.sections[currentPage - 1].sign.map((sign, signIndex) => (
-                    <Image
-                      key={`sign-${signIndex}`}
-                      style={pdfStyles.drawingImage}
-                      src={typeof sign[0] === 'string' ? sign[0] : signatureDataURL}
-                    />
-                  ));
-                } else {
-                  return documentData.sections[currentPage - 1].check.map((check, checkIndex) => (
-                    <Image
-                      key={`check-${checkIndex}`}
-                      style={pdfStyles.drawingImage}
-                      src={typeof check[0] === 'string' ? check[0] : signatureDataURL}
-                    />
-                  ));
-                }
-              } else {
-                return (
-                  <Text key={`paragraph-${idx}`} style={pdfStyles.text}>
-                    {paragraph}
-                  </Text>
-                );
-              }
-            })}
+  return (
+    <Document>
+      <Page size="A4" style={pdfStyles.page}>
+        {/* Header */}
+        <View style={pdfStyles.header}>
+          {documentData.header && (
+            <Image
+              src={`/dummies/woori_first/${documentData.header}`}
+              style={pdfStyles.headerImage}
+            />
+          )}
         </View>
-      )}
-    </Page>
-  </Document>
-);
 
-// PDF Component with Navigation and Signature
+        {/* Two Sections */}
+        <View style={pdfStyles.sectionContainer}>
+          {/* Section 1 */}
+          <View style={pdfStyles.section}>
+            {section1?.file.length > 0
+              ? section1.file.map((file, idx) => (
+                  <Image
+                    key={`file-${idx}`}
+                    style={pdfStyles.chartImage}
+                    src={`/dummies/woori_first/${file}`}
+                  />
+                ))
+              : section1?.check
+                  .concat(section1?.sign)
+                  .map((item, idx) => (
+                    <Image
+                      key={`highlight-${idx}`}
+                      style={pdfStyles.drawingImage}
+                      src={signatureDataURLs[idx] || `/dummies/woori_first/${item[0]}`}
+                    />
+                  ))}
+          </View>
+
+          {/* Section 2 */}
+          <View style={pdfStyles.section}>
+            {section2?.file.length > 0
+              ? section2.file.map((file, idx) => (
+                  <Image
+                    key={`file-${idx}`}
+                    style={pdfStyles.chartImage}
+                    src={`/dummies/woori_first/${file}`}
+                  />
+                ))
+              : section2?.check
+                  .concat(section2?.sign)
+                  .map((item, idx) => (
+                    <Image
+                      key={`highlight-${idx}`}
+                      style={pdfStyles.drawingImage}
+                      src={signatureDataURLs[idx] || `/dummies/woori_first/${item[0]}`}
+                    />
+                  ))}
+          </View>
+        </View>
+
+        {/* Footer */}
+        <View style={pdfStyles.footer}>
+          {documentData.footer && (
+            <Image
+              src={`/dummies/woori_first/${documentData.footer}`}
+              style={pdfStyles.footerImage}
+            />
+          )}
+        </View>
+      </Page>
+    </Document>
+  );
+};
+
 const PDF: React.FC = () => {
-  const { document } = useDocumentStore(); // useDocumentStore에서 상태 가져오기
+  const isDrawing = useRef(false);
+  const signatureCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]); // Array of canvas refs
+
+  const { documentItem } = useDocumentStore(); // useDocumentStore과 상호적인 상화 수행
   const [isClient, setIsClient] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [signatureDataURL, setSignatureDataURL] = useState<string | null>(null);
-  const signatureCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const isDrawing = useRef(false);
+  const [signatureDataURLs, setSignatureDataURLs] = useState<string[]>([]); // Array 상태로 변경
+  const [sectionDrawingList, setSectionDrawingList] = useState<any[]>([]);
+  const [currentItem, setCurrentItem] = useState<number>(0);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const totalPages = document.sections.length > 0 ? document.sections.length : 1;
+  useEffect(() => {
+    const section1 = documentItem.sections[currentPage * 2 - 2];
+    const section2 = documentItem.sections[currentPage * 2 - 1];
+    const combinedList = [];
 
-  // Navigate to the next page
+    if (section1) {
+      combinedList.push(...(section1.check || []), ...(section1.sign || []));
+    }
+    if (section2) {
+      combinedList.push(...(section2.check || []), ...(section2.sign || []));
+    }
+    setSectionDrawingList(combinedList);
+  }, [currentPage, documentItem]);
+
+  const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
+
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
 
-  // Navigate to the previous page
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
-  // Clear the signature from the canvas
-  const handleClearSignature = () => {
-    const canvas = signatureCanvasRef.current;
+  const handleClearSignature = (index: number) => {
+    const canvas = signatureCanvasRefs.current[index];
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
-    setSignatureDataURL(null);
+    setSignatureDataURLs((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Save the signature as a data URL
-  const handleSaveSignature = () => {
-    const canvas = signatureCanvasRef.current;
+  const handleSaveSignature = (index: number) => {
+    const canvas = signatureCanvasRefs.current[index];
     if (canvas) {
       const dataURL = canvas.toDataURL('image/png');
-      setSignatureDataURL(dataURL);
+      setSignatureDataURLs((prev) => {
+        const updated = [...prev];
+        updated[index] = dataURL;
+        return updated;
+      });
+      console.log(`Saved Image for canvas ${index}:`, dataURL);
+      setCurrentItem(currentItem + 1);
     }
   };
 
-  // Start drawing on the canvas
-  const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>, index: number) => {
     isDrawing.current = true;
-    const canvas = signatureCanvasRef.current;
+    const canvas = signatureCanvasRefs.current[index];
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
@@ -222,10 +257,9 @@ const PDF: React.FC = () => {
     }
   };
 
-  // Draw on the canvas
-  const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  const draw = (event: React.MouseEvent<HTMLCanvasElement>, index: number) => {
     if (!isDrawing.current) return;
-    const canvas = signatureCanvasRef.current;
+    const canvas = signatureCanvasRefs.current[index];
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
@@ -235,19 +269,64 @@ const PDF: React.FC = () => {
     }
   };
 
-  // End drawing on the canvas
   const endDrawing = () => {
     isDrawing.current = false;
   };
 
+  const loadBackgroundImage = (src: string, index: number) => {
+    const canvas = signatureCanvasRefs.current[index];
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const background = new window.Image();
+        background.src = `/dummies/woori_first/${src}`;
+
+        background.onload = () => {
+          canvas.width = background.width;
+          canvas.height = background.height;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        };
+      }
+    }
+  };
+
+  useEffect(() => {
+    sectionDrawingList.forEach((item, index) => {
+      loadBackgroundImage(item[0], index);
+    });
+  }, [sectionDrawingList]);
+
+  useEffect(() => {
+    sectionDrawingList.forEach((item, index) => {
+      if (signatureDataURLs[index]) {
+        setSectionDrawingList((prev) => {
+          const updated = [...prev];
+          updated[index] = [item[0], true];
+          return updated;
+        });
+      }
+    });
+  }, [signatureDataURLs]);
+
+  useEffect(() => {
+    console.log('Signature Data URLs:', signatureDataURLs);
+    console.log('Section Drawing List:', sectionDrawingList);
+  }, [signatureDataURLs, sectionDrawingList]);
+
   return (
     <FlexContainer padding="20px">
-      {/* PDF Download Link */}
       <PDFDownloadLink
-        document={<PDFDocument documentData={document} signatureDataURL={signatureDataURL} currentPage={currentPage} />}
+        document={
+          <PDFDocument
+            documentData={documentItem}
+            signatureDataURLs={signatureDataURLs} // Array로 전달
+            currentPage={currentPage}
+          />
+        }
         fileName="dynamic_output.pdf"
       >
-        {({ blob, url, loading, error }) =>
+        {({ loading }) =>
           loading ? (
             <BlueBtn disabled>Loading document...</BlueBtn>
           ) : (
@@ -256,15 +335,17 @@ const PDF: React.FC = () => {
         }
       </PDFDownloadLink>
 
-      {/* PDF Viewer */}
       {isClient && (
-        <PDFViewer style={{ width: '100%', height: '500px', marginTop: '20px', overflow: 'hidden' }}>
-          <PDFDocument documentData={document} signatureDataURL={signatureDataURL} currentPage={currentPage} />
+        <PDFViewer style={{ width: '100%', height: '500px', marginTop: '20px' }}>
+          <PDFDocument
+            documentData={documentItem}
+            signatureDataURLs={signatureDataURLs}
+            currentPage={currentPage}
+          />
         </PDFViewer>
       )}
 
-      {/* Page Navigation Buttons */}
-      <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <BlueBtn onClick={handlePreviousPage} disabled={currentPage === 1}>
           Previous Page
         </BlueBtn>
@@ -276,25 +357,27 @@ const PDF: React.FC = () => {
         </BlueBtn>
       </div>
 
-      {/* Signature Canvas on the Last Page */}
-      {currentPage === totalPages && (
-        <div style={{ marginTop: '20px' }}>
-          <Text style={{ marginBottom: '10px' }}>서명을 해주세요:</Text>
-          <canvas
-            ref={signatureCanvasRef}
-            style={pdfStyles.signatureCanvas}
-            onMouseDown={startDrawing}
-            onMouseMove={draw}
-            onMouseUp={endDrawing}
-            onMouseLeave={endDrawing}
-          ></canvas>
-          <div style={{ marginTop: '10px' }}>
-            <BlueBtn onClick={handleClearSignature}>초기화</BlueBtn>
-            <BlueBtn onClick={handleSaveSignature} style={{ marginLeft: '10px' }}>
-              저장
-            </BlueBtn>
-          </div>
-        </div>
+      {sectionDrawingList.map(
+        (item, index) =>
+          currentItem === index && (
+            <div key={index} style={{ marginTop: '20px' }}>
+              <Text>서명을 해주세요:</Text>
+              <canvas
+                ref={(el) => (signatureCanvasRefs.current[index] = el)}
+                style={{ width: '100%', border: '1px solid #ccc' }}
+                onMouseDown={(e) => startDrawing(e, index)}
+                onMouseMove={(e) => draw(e, index)}
+                onMouseUp={endDrawing}
+                onMouseLeave={endDrawing}
+              ></canvas>
+              <div>
+                <BlueBtn onClick={() => handleClearSignature(index)}>초기화</BlueBtn>
+                <BlueBtn onClick={() => handleSaveSignature(index)} style={{ marginLeft: '10px' }}>
+                  저장
+                </BlueBtn>
+              </div>
+            </div>
+          ),
       )}
     </FlexContainer>
   );

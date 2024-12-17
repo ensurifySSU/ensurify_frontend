@@ -6,11 +6,13 @@ import Dashboard from './Dashboard/Dashboard';
 import CreateRoom from './CreateRoom/CreateRoom';
 import ContractRoom from './Contract/ContractRoom';
 import Connecting from './Contract/components/Connecting/Connecting';
+import PDF from './Common/components/PDF';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />,
+    // element: <MainLayout />,
+    element: <PDF />,
     children: [
       {
         path: '/home',
