@@ -46,7 +46,7 @@ export const sendPageWS = async ({ stompClient, data }: IPageProps) => {
 export const sendSignWS = async ({ stompClient, data }: ISignProps) => {
   if (stompClient) {
     stompClient.publish({
-      destination: '/pub/page',
+      destination: '/pub/sign',
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
       },
@@ -63,7 +63,7 @@ export const sendSignWS = async ({ stompClient, data }: ISignProps) => {
 export const sendCheckWS = async ({ stompClient, data }: ICheckProps) => {
   if (stompClient) {
     stompClient.publish({
-      destination: '/pub/page',
+      destination: '/pub/check',
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
       },
