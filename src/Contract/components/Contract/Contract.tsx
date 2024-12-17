@@ -319,7 +319,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                   loading ? (
                     <BlueBtn disabled>Loading document...</BlueBtn>
                   ) : (
-                    <BlueBtn onClick={handleClickDownload}>Download</BlueBtn>
+                    <BlueBtn onClick={handleClickDownload}>계약서 pdf 다운로드</BlueBtn>
                   )
                 }
               </PDFDownloadLink>
@@ -338,18 +338,18 @@ const Contract = forwardRef<HTMLDivElement, Props>(
               >
                 <Button
                   handleClick={() => handlePageDown(currentPage - 1)}
-                  isActive={currentPage === 1}
+                  isActive={currentPage !== 1}
                   content="이전"
                   width="10rem"
                 />
-                {/* <span style={{ margin: '0 10px' }}>
-                Page {currentPage} of {totalPages}
-              </span> */}
+                <span style={{ margin: '0 10px' }}>
+                  Page {currentPage} of {totalPages}
+                </span>
                 <Button
                   handleClick={() => {
                     handlePageUp(currentPage + 1);
                   }}
-                  isActive={currentPage === totalPages}
+                  isActive={currentPage !== totalPages}
                   content="다음"
                   width="10rem"
                 />
@@ -383,15 +383,11 @@ const Contract = forwardRef<HTMLDivElement, Props>(
                         height: 'fit-content',
                         justifyContent: 'center',
                         marginTop: '10px',
+                        gap: '2rem',
                       }}
                     >
-                      <BlueBtn onClick={() => handleClearSignature(index)}>초기화</BlueBtn>
-                      <BlueBtn
-                        onClick={() => handleSaveSignature(index)}
-                        style={{ marginLeft: '10px' }}
-                      >
-                        저장
-                      </BlueBtn>
+                      <Button handleClick={() => handleClearSignature(index)} content="초기화" />
+                      <Button handleClick={() => handleSaveSignature(index)} content="저장" />
                     </div>
                   </div>
                 ),
