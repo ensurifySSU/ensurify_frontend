@@ -23,77 +23,92 @@ Font.register({
 // Define PDF Document Styles
 const pdfStyles = StyleSheet.create({
   title: {
+    marginBottom: 10,
+    fontFamily: 'SpoqaHanSans',
     fontSize: 20,
-    fontFamily: 'SpoqaHanSans',
     fontWeight: 'bold',
-    marginBottom: 10,
   },
+
   subTitle: {
-    fontSize: 16,
-    fontFamily: 'SpoqaHanSans',
     marginBottom: 10,
-  },
-  author: {
-    fontSize: 12,
     fontFamily: 'SpoqaHanSans',
-    marginBottom: 20,
+    fontSize: 16,
   },
+
+  author: {
+    marginBottom: 20,
+    fontFamily: 'SpoqaHanSans',
+    fontSize: 12,
+  },
+
   page: {
-    padding: 20,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    padding: 20,
   },
+
   header: {
-    textAlign: 'center',
     marginBottom: 10,
+    textAlign: 'center',
   },
+
   headerImage: {
     width: '100%',
     height: 50,
   },
+
   footer: {
-    textAlign: 'center',
     marginTop: 10,
+    textAlign: 'center',
   },
+
   footerImage: {
     width: '100%',
     height: 30,
   },
+
   sectionContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+
     marginVertical: 20,
   },
+
   section: {
     width: '48%', // 두 섹션이 세로로 나뉘도록 50% 이하로 설정
-    border: '1px solid #ddd',
     padding: 10,
+    border: '1px solid #ddd',
   },
+
   sectionTitle: {
-    fontSize: 14,
     marginBottom: 5,
+    fontSize: 14,
     fontWeight: 'bold',
   },
+
   text: {
-    fontSize: 12,
     marginBottom: 5,
+    fontSize: 12,
   },
+
   chartImage: {
     width: '100%',
     height: 'auto',
     marginBottom: 5,
   },
+
   drawingImage: {
     width: '100%',
     height: 'auto',
     marginBottom: 5,
   },
+
   signatureCanvas: {
-    border: '1px solid #000',
     width: '100%',
     height: 150,
     marginTop: 20,
+    border: '1px solid #000',
   },
 });
 
@@ -122,7 +137,7 @@ const PDFDocument: React.FC<{
         <View style={pdfStyles.sectionContainer}>
           {/* Section 1 */}
           <View style={pdfStyles.section}>
-            {section1?.file.length > 0
+            {section1?.file && section1.file.length > 0
               ? section1.file.map((file, idx) => (
                   <Image
                     key={`file-${idx}`}
@@ -130,20 +145,19 @@ const PDFDocument: React.FC<{
                     src={`/dummies/woori_first/${file}`}
                   />
                 ))
-              : section1?.check
-                  .concat(section1?.sign)
-                  .map((item, idx) => (
-                    <Image
-                      key={`highlight-${idx}`}
-                      style={pdfStyles.drawingImage}
-                      src={signatureDataURLs[idx] || `/dummies/woori_first/${item[0]}`}
-                    />
-                  ))}
+              : // section1?.check와 section1?.sign을 안전하게 합쳐서 이미지 렌더링
+                [...(section1?.check || []), ...(section1?.sign || [])].map((item, idx) => (
+                  <Image
+                    key={`highlight-${idx}`}
+                    style={pdfStyles.drawingImage}
+                    src={signatureDataURLs?.[idx] || `/dummies/woori_first/${item[0]}`}
+                  />
+                ))}
           </View>
 
           {/* Section 2 */}
           <View style={pdfStyles.section}>
-            {section2?.file.length > 0
+            {section2?.file && section2.file.length > 0
               ? section2.file.map((file, idx) => (
                   <Image
                     key={`file-${idx}`}
@@ -151,15 +165,14 @@ const PDFDocument: React.FC<{
                     src={`/dummies/woori_first/${file}`}
                   />
                 ))
-              : section2?.check
-                  .concat(section2?.sign)
-                  .map((item, idx) => (
-                    <Image
-                      key={`highlight-${idx}`}
-                      style={pdfStyles.drawingImage}
-                      src={signatureDataURLs[idx] || `/dummies/woori_first/${item[0]}`}
-                    />
-                  ))}
+              : // section2?.check와 section2?.sign을 안전하게 합쳐서 이미지 렌더링
+                [...(section2?.check || []), ...(section2?.sign || [])].map((item, idx) => (
+                  <Image
+                    key={`highlight-${idx}`}
+                    style={pdfStyles.drawingImage}
+                    src={signatureDataURLs?.[idx] || `/dummies/woori_first/${item[0]}`}
+                  />
+                ))}
           </View>
         </View>
 
@@ -189,7 +202,7 @@ const DownloadDocument: React.FC<{
   return (
     <Document>
       {Array.from({ length: totalPages }).map((_, pageIndex) => {
-        const section1 = sections[pageIndex * 2];     // 첫 번째 섹션
+        const section1 = sections[pageIndex * 2]; // 첫 번째 섹션
         const section2 = sections[pageIndex * 2 + 1]; // 두 번째 섹션 (있을 경우)
 
         return (
@@ -197,10 +210,7 @@ const DownloadDocument: React.FC<{
             {/* Header */}
             <View style={pdfStyles.header}>
               {header && (
-                <Image
-                  src={`/dummies/woori_first/${header}`}
-                  style={pdfStyles.headerImage}
-                />
+                <Image src={`/dummies/woori_first/${header}`} style={pdfStyles.headerImage} />
               )}
             </View>
 
@@ -208,7 +218,7 @@ const DownloadDocument: React.FC<{
             <View style={pdfStyles.sectionContainer}>
               {/* Section 1 */}
               <View style={pdfStyles.section}>
-                {section1?.file.length > 0
+                {section1?.file && section1.file.length > 0
                   ? section1.file.map((file, idx) => (
                       <Image
                         key={`file-${pageIndex}-1-${idx}`}
@@ -216,8 +226,9 @@ const DownloadDocument: React.FC<{
                         src={`/dummies/woori_first/${file}`}
                       />
                     ))
-                  : section1?.check
-                      .concat(section1?.sign)
+                  : // section1?.check와 section1?.sign을 결합해서 이미지 렌더링
+                    (section1?.check || [])
+                      .concat(section1?.sign || [])
                       .map((item, idx) => (
                         <Image
                           key={`highlight-${pageIndex}-1-${idx}`}
@@ -229,7 +240,7 @@ const DownloadDocument: React.FC<{
 
               {/* Section 2 */}
               <View style={pdfStyles.section}>
-                {section2?.file.length > 0
+                {section2?.file && section2.file.length > 0
                   ? section2.file.map((file, idx) => (
                       <Image
                         key={`file-${pageIndex}-2-${idx}`}
@@ -237,8 +248,9 @@ const DownloadDocument: React.FC<{
                         src={`/dummies/woori_first/${file}`}
                       />
                     ))
-                  : section2?.check
-                      .concat(section2?.sign)
+                  : // section2.check와 section2.sign을 결합해서 이미지 렌더링
+                    (section2?.check || [])
+                      .concat(section2?.sign || [])
                       .map((item, idx) => (
                         <Image
                           key={`highlight-${pageIndex}-2-${idx}`}
@@ -252,10 +264,7 @@ const DownloadDocument: React.FC<{
             {/* Footer */}
             <View style={pdfStyles.footer}>
               {footer && (
-                <Image
-                  src={`/dummies/woori_first/${footer}`}
-                  style={pdfStyles.footerImage}
-                />
+                <Image src={`/dummies/woori_first/${footer}`} style={pdfStyles.footerImage} />
               )}
             </View>
           </Page>
@@ -413,13 +422,13 @@ const PDF: React.FC = () => {
         }
         fileName="dynamic_output.pdf"
       >
-        {({ loading }) =>
+        {/* {({ loading }) =>
           loading ? (
             <BlueBtn disabled>Loading document...</BlueBtn>
           ) : (
             <BlueBtn>Download PDF</BlueBtn>
           )
-        }
+        } */}
       </PDFDownloadLink>
 
       {isClient && (
@@ -445,7 +454,7 @@ const PDF: React.FC = () => {
       </div>
 
       {sectionDrawingList.map(
-        (item, index) =>
+        (index) =>
           currentItem === index && (
             <div key={index} style={{ marginTop: '20px' }}>
               <Text>서명을 해주세요:</Text>

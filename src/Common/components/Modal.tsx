@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import {
   AnswerText,
   ChatInput,
-  ChatInputWrapper,
-  CloseButton,
+  // ChatInputWrapper,
+  // CloseButton,
   Container,
   FloatingAIButton,
   InfoButton,
   InfoListContainer,
-  ModalContent,
-  ModalFooter,
+  // ModalContent,
+  // ModalFooter,
   ModalOverlay,
-  TextButton,
+  // TextButton,
 } from '../common';
 import AIButton from './AIButton';
 import { useMutation } from '@tanstack/react-query';
@@ -26,8 +26,8 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ isActive, onClose, userType }) => {
   const [input, setInput] = useState('');
   const [answer, setAnswer] = useState('');
-  const [status, setStatus] = useState(false);
-  const [infoList, setInfoList] = useState<string[]>(['irp란?', '감자야']);
+  const [, setStatus] = useState(false);
+  const [infoList] = useState<string[]>(['irp란?', '감자야']);
 
   const onAIMessage = useMutation({
     mutationFn: postAI,

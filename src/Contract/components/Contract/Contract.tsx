@@ -7,7 +7,7 @@ import {
   View,
   Document,
   StyleSheet,
-  PDFDownloadLink,
+  // PDFDownloadLink,
   PDFViewer,
   Font,
   Image,
@@ -23,11 +23,9 @@ import { useMutation } from '@tanstack/react-query';
 import { postFileUpload } from '../../../Common/apis/servies';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'react-router-dom';
-import { sendPageWS, sendSignWS, sendCheckWS } from '../../servies/contractWebsocket';
-import AIArea from '../../../Common/components/AIArea';
+import { sendPageWS, sendSignWS } from '../../servies/contractWebsocket';
 import Modal from '../../../Common/components/Modal';
 import AIButton from '../../../Common/components/AIButton';
-import { check } from '../../../../node_modules/prettier/standalone.d';
 import Button from '../../../Common/components/Button';
 import useRole from '../../../Common/hooks/useRole';
 import { useRoleStore } from '../../../Common/stores/roleStore';
@@ -56,9 +54,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
     const [currentItem, setCurrentItem] = useState<number>(0);
     const totalPages = documentItem.sections.length > 0 ? documentItem.sections.length / 2 : 1;
 
-    const [userType, setUserType] = useState<string>(
-      sessionStorage.getItem('token') ? 'user' : 'client',
-    );
+    const [userType] = useState<string>(sessionStorage.getItem('token') ? 'user' : 'client');
 
     const [isModalActive, setIsModalActive] = useState(false);
 
@@ -167,17 +163,17 @@ const Contract = forwardRef<HTMLDivElement, Props>(
       setSectionDrawingList(combinedList);
     }, [currentPage, documentItem]);
 
-    const handleNextPage = () => {
-      if (currentPage < totalPages) {
-        setCurrentPage(currentPage + 1);
-      }
-    };
+    // const handleNextPage = () => {
+    //   if (currentPage < totalPages) {
+    //     setCurrentPage(currentPage + 1);
+    //   }
+    // };
 
-    const handlePreviousPage = () => {
-      if (currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-    };
+    // const handlePreviousPage = () => {
+    //   if (currentPage > 1) {
+    //     setCurrentPage(currentPage - 1);
+    //   }
+    // };
 
     const handleClearSignature = (index: number) => {
       const canvas = signatureCanvasRefs.current[index];
@@ -383,7 +379,7 @@ const Contract = forwardRef<HTMLDivElement, Props>(
               {sectionDrawingList.map(
                 (item, index) =>
                   currentItem === index && (
-                    <div key={index} style={{ marginTop: '20px' }}>
+                    <div key={index + item} style={{ marginTop: '20px' }}>
                       {role === 'client' && <Text>서명을 해주세요:</Text>}
                       <canvas
                         ref={(el) => (signatureCanvasRefs.current[index] = el)}
@@ -496,7 +492,7 @@ const pdfStyles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  headerimage: {
+  headerImage: {
     width: '100%',
     height: 50,
   },
@@ -506,12 +502,12 @@ const pdfStyles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  footerimage: {
+  footerImage: {
     width: '100%',
     height: 30,
   },
 
-  sectioncontainer: {
+  sectionContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -536,13 +532,13 @@ const pdfStyles = StyleSheet.create({
     fontSize: 12,
   },
 
-  chartimage: {
+  chartImage: {
     width: '100%',
     height: 'auto',
     marginBottom: 5,
   },
 
-  drawingimage: {
+  drawingImage: {
     width: '100%',
     height: 'auto',
     marginBottom: 5,
@@ -581,28 +577,28 @@ const PDFDocument: React.FC<{
         <View style={pdfStyles.sectionContainer}>
           {/* Section 1 */}
           <View style={pdfStyles.section}>
-            {section1?.file.length > 0
-              ? section1.file.map((file, idx) => (
+            {section1?.file && section1?.file.length > 0
+              ? section1.file?.map((file, idx) => (
                   <Image
                     key={`file-${idx}`}
                     style={pdfStyles.chartImage}
                     src={`/dummies/woori_first/${file}`}
                   />
                 ))
-              : section1?.check
-                  .concat(section1?.sign)
+              : (Array.isArray(section1?.check) ? section1.check : [])
+                  .concat(Array.isArray(section1?.sign) ? section1.sign : [])
                   .map((item, idx) => (
                     <Image
                       key={`highlight-${idx}`}
                       style={pdfStyles.drawingImage}
-                      src={signatureDataURLs[idx] || `/dummies/woori_first/${item[0]}`}
+                      src={signatureDataURLs?.[idx] || `/dummies/woori_first/${item[0]}`}
                     />
                   ))}
           </View>
 
           {/* Section 2 */}
           <View style={pdfStyles.section}>
-            {section2?.file.length > 0
+            {section2?.file && section2?.file.length > 0
               ? section2.file.map((file, idx) => (
                   <Image
                     key={`file-${idx}`}
@@ -610,13 +606,13 @@ const PDFDocument: React.FC<{
                     src={`/dummies/woori_first/${file}`}
                   />
                 ))
-              : section2?.check
-                  .concat(section2?.sign)
+              : (Array.isArray(section2?.check) ? section2?.check : [])
+                  .concat(Array.isArray(section2?.sign) ? section2.sign : [])
                   .map((item, idx) => (
                     <Image
                       key={`highlight-${idx}`}
                       style={pdfStyles.drawingImage}
-                      src={signatureDataURLs[idx] || `/dummies/woori_first/${item[0]}`}
+                      src={signatureDataURLs?.[idx] || `/dummies/woori_first/${item[0]}`}
                     />
                   ))}
           </View>
@@ -663,7 +659,7 @@ const DownloadDocument: React.FC<{
             <View style={pdfStyles.sectionContainer}>
               {/* Section 1 */}
               <View style={pdfStyles.section}>
-                {section1?.file.length > 0
+                {section1?.file && section1?.file.length > 0
                   ? section1.file.map((file, idx) => (
                       <Image
                         key={`file-${pageIndex}-1-${idx}`}
@@ -671,8 +667,8 @@ const DownloadDocument: React.FC<{
                         src={`/dummies/woori_first/${file}`}
                       />
                     ))
-                  : section1?.check
-                      .concat(section1?.sign)
+                  : (Array.isArray(section1?.check) ? section1.check : [])
+                      .concat(Array.isArray(section1?.sign) ? section1.sign : [])
                       .map((item, idx) => (
                         <Image
                           key={`highlight-${pageIndex}-1-${idx}`}
@@ -684,7 +680,7 @@ const DownloadDocument: React.FC<{
 
               {/* Section 2 */}
               <View style={pdfStyles.section}>
-                {section2?.file.length > 0
+                {section2?.file && section2?.file.length > 0
                   ? section2.file.map((file, idx) => (
                       <Image
                         key={`file-${pageIndex}-2-${idx}`}
@@ -692,8 +688,8 @@ const DownloadDocument: React.FC<{
                         src={`/dummies/woori_first/${file}`}
                       />
                     ))
-                  : section2?.check
-                      .concat(section2?.sign)
+                  : (Array.isArray(section2?.check) ? section2.check : [])
+                      .concat(Array.isArray(section2?.sign) ? section2.sign : [])
                       .map((item, idx) => (
                         <Image
                           key={`highlight-${pageIndex}-2-${idx}`}

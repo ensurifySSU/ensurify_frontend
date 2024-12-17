@@ -1,4 +1,3 @@
-import client from '../../client';
 import clientInstance from './clientInstance';
 import instance from './instance';
 

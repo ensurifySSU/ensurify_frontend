@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AIButton from './AIButton';
 import Modal from './Modal';
-import { Container, FloatingAIButton, InfoButton } from '../common';
+import { FloatingAIButton } from '../common';
 
 const AIArea = () => {
   const [isModalActive, setIsModalActive] = useState(false);
@@ -19,7 +19,7 @@ const AIArea = () => {
       <FloatingAIButton>
         <AIButton onClick={handleOpenModal} isActive={isModalActive} />
       </FloatingAIButton>
-      <Modal isActive={isModalActive} onClose={handleCloseModal} />
+      <Modal isActive={isModalActive} onClose={handleCloseModal} userType="client" />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { DocumentStore, Section } from '../types/type';
+import { DocumentStore } from '../types/type';
 import data from '../../../public/dummies/woori_first/woori_first_doc.json';
 
 const useDocumentStore = create<DocumentStore>((set) => ({
@@ -11,7 +11,7 @@ const useDocumentStore = create<DocumentStore>((set) => ({
     footer: data.footer,
     sections: data.sections,
   },
-  
+
   setDocument: (documentItem) => set({ documentItem }),
 
   updateSectionSign: (sectionIndex, sign) =>
@@ -19,7 +19,7 @@ const useDocumentStore = create<DocumentStore>((set) => ({
       documentItem: {
         ...state.documentItem,
         sections: state.documentItem.sections.map((section, i) =>
-          i === sectionIndex ? { ...section, sign } : section
+          i === sectionIndex ? { ...section, sign } : section,
         ),
       },
     })),
@@ -29,7 +29,7 @@ const useDocumentStore = create<DocumentStore>((set) => ({
       documentItem: {
         ...state.documentItem,
         sections: state.documentItem.sections.map((section, i) =>
-          i === sectionIndex ? { ...section, check } : section
+          i === sectionIndex ? { ...section, check } : section,
         ),
       },
     })),

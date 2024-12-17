@@ -13,6 +13,9 @@
       "/^border/": ["px"],
       "unit-allowed-list": ["%", "deg", "px", "rem", "ms", "s", "em", "vw", "vh"]
     },
-    "order/order": ["custom-properties", "declarations"]
+    "order/order": ["custom-properties", "declarations"],
+    "selector-type-no-unknown": null,
+    "property-no-unknown": null,
+    "selector-type-case": null
   }
 }

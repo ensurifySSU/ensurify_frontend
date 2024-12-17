@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import styled from '@emotion/styled';
 import Icon_waiting from '../assets/waitingAI.svg';
 import Icon_active from '../assets/activeAI.svg';
-import { FloatingAIButton, StyledAIButton } from '../common';
+import { StyledAIButton } from '../common';
 
 interface Props {
   onClick: () => void;
